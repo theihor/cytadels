@@ -3,6 +3,8 @@ from pygame.sprite import Sprite
 import sys
 import os
 import math
+from card import NoImgCard
+from globalvars import *
 
 pygame.init()
 
@@ -22,7 +24,7 @@ def load_image(name, colorkey=None):
     return image
 
 
-class Card(Sprite):
+class ImgCard(Sprite):
     def __init__(self, img_file_name, x=0, y=0):
         Sprite.__init__(self)
         self.pos = (x, y)
@@ -58,7 +60,7 @@ class Card(Sprite):
         (r.x, r.y) = self.pos
         return r
 
-the_card = Card('card2.bmp', 50, 300)
+the_card = NoImgCard(50, 300, "Test", 5, 6, 5)
 the_card.scale(50, 75)
 clock = pygame.time.Clock()
 
@@ -79,8 +81,8 @@ def top_deck(card):
     card.set_pos(50, 300)
     card.scale(50, 75)
     v = (8, -7)
-    scaling = (10, 15)
-    while card.get_rect().w < 400 and card.get_rect().h < 600:
+    scaling = (20, 30)
+    while card.get_rect().w < 300 and card.get_rect().h < 450:
         #print(card.rect.w, card.rect.h)
         card.move(v)
         card.scale_d(scaling)
