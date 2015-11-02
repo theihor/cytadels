@@ -1,5 +1,5 @@
 from log import *
-from globals import *
+from globalvars import *
 from characters import *
 import game_init
 import random

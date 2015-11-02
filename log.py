@@ -1,5 +1,5 @@
 import sys
-from globals import COLOR_NAME
+from globalvars import COLOR_NAME
 
 LOG_FILE_NAME = 'game.log'
 LOG_FILE = None

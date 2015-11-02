@@ -1,7 +1,10 @@
-from globals import *
+from globalvars import *
 from definitions import *
 from log import log
 import sys, csv, random
+from card import NoImgCard
+
+
 
 def load_deck():
     deck = []
@@ -11,7 +14,7 @@ def load_deck():
             if row[0] == 'name': continue
             count = int(row[4])
             for i in range(0,count):
-                
+
                 deck.append({'name' : row[0],
                             'price' : int(row[1]),
                             'value' : int(row[2]),
@@ -20,10 +23,12 @@ def load_deck():
         pass
     return deck
 
+
 def init_hand(game_state):
     hand = game_state.top_deck(4)
     return hand
-    
+
+
 def init_game():
     deck = load_deck()
     random.shuffle(deck)

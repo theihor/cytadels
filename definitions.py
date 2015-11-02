@@ -1,4 +1,4 @@
-from globals import COUNT_OF_PLAYERS
+from globalvars import COUNT_OF_PLAYERS
 from log import *
 import random
 from characters import *
@@ -55,6 +55,7 @@ class Player:
     def roled_name(self):
         return self.role[0] + ' (' + self.name + '[' + str(self.money) + ' ' + str(self.base_score()) + '])' 
 pass
+
 
 class GameState:
     def __init__(self):
@@ -122,7 +123,7 @@ class GameState:
         
         #full = [p for p in self.players if len(player.slors) == 8]
         
-        
+
         
         return max(self.players, key=lambda p: p.base_score())
  
@@ -131,4 +132,6 @@ class GameState:
         
     def assign_random_crown_owner(self):
         self.crown_owner = random.randint(0, COUNT_OF_PLAYERS - 1)
-        
+
+    def human_player(self):
+        return self.players[0]

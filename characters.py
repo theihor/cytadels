@@ -1,5 +1,5 @@
 from log import log, str_card
-from globals import *
+from globalvars import *
 import random
 
 def noone(self, gs):

@@ -1,74 +1,27 @@
+#!/usr/bin/python3
 import pygame
-from pygame.sprite import Sprite
 import sys
-import os
-import math
-from card import NoImgCard
 from globalvars import *
+from card import *
+from game_init import init_game
+from view import *
 
 pygame.init()
 
 # create window
-window = pygame.display.set_mode(SIZE)
+window = pygame.display.set_mode(WINDOW_SIZE)
 pygame.display.set_caption('Citadels')
 
 
-def load_image(name, colorkey=None):
-    fullname = os.path.join('img', name)
-    image = pygame.image.load(fullname)
-    image = image.convert()
-    if colorkey is not None:
-        if colorkey is -1:
-            colorkey = image.get_at((0,0))
-            image.set_colorkey(colorkey, RLEACCEL)
-    return image
-
-
-class ImgCard(Sprite):
-    def __init__(self, img_file_name, x=0, y=0):
-        Sprite.__init__(self)
-        self.pos = (x, y)
-        self.source_img = load_image(img_file_name)
-        self.img = self.source_img
-        self.picked = False
-
-    def set_pos(self, x, y):
-        self.pos = (x, y)
-
-    def move(self, vector):
-        (dx, dy) = vector
-        (x, y) = self.pos
-        self.set_pos(x + dx, y + dy)
-
-    def scale_d(self, diff=(0, 0)):
-        (dx, dy) = diff
-        size = (self.get_rect().w + dx, self.get_rect().h + dy)
-        self.img = pygame.transform.smoothscale(self.source_img, size)
-
-    def scale(self, w, h):
-        size = (w, h)
-        self.img = pygame.transform.smoothscale(self.source_img, size)
-
-    def reset_img(self):
-        self.img = self.source_img
-
-    def set_picked(self, picked=True):
-        self.picked = picked
-
-    def get_rect(self):
-        r = self.img.get_rect()
-        (r.x, r.y) = self.pos
-        return r
-
-the_card = NoImgCard(50, 300, "Test", 5, 6, 5)
-the_card.scale(50, 75)
+#the_card = NoImgCard(50, 300, "Test", 5, 6, 5)
+#the_card.scale(50, 75)
 clock = pygame.time.Clock()
 
 
-def refresh_scene(card):
+def refresh_scene(gs, mouse_pos=None):
     clock.tick(GLOBAL_FPS)
     window.fill(COLOR_WHITE)
-    show_card(card)
+    draw_game_state(window, gs, mouse_pos)
     pygame.display.flip()
     pass
 
@@ -90,15 +43,40 @@ def top_deck(card):
     card.reset_img()
 
 
+gs = init_game()
+
+def init_view(gs):
+    drawable = []
+    updatable = []
+    player_hand = PlayerHand(gs.human_player().hand)
+    drawable.append(player_hand)
+    updatable.append(player_hand)
+    deck = Deck(gs.deck)
+    drawable.append(deck)
+    return(drawable, updatable)
+
+
+
 while 1:
-    refresh_scene(the_card)
+    clock.tick(GLOBAL_FPS)
+    window.fill(COLOR_WHITE)
+
+    (drawable, updatable) = init_view(gs)
+
+    for obj in updatable:
+        obj.update(pygame.mouse.get_pos())
+    for obj in drawable:
+        obj.draw(window)
+
+    pygame.display.flip()
+
     for e in pygame.event.get():
         if e.type == pygame.QUIT:
             sys.exit()
-        if e.type == pygame.MOUSEBUTTONDOWN and e.button == 1:
-            print(pygame.mouse.get_pos())
-            print(the_card.get_rect())
-            if the_card.get_rect().collidepoint(pygame.mouse.get_pos()):
-                top_deck(the_card)
+        # if e.type == pygame.MOUSEBUTTONDOWN and e.button == 1:
+        #     print(pygame.mouse.get_pos())
+        #     print(the_card.get_rect())
+        #     if the_card.get_rect().collidepoint(pygame.mouse.get_pos()):
+        #         top_deck(the_card)
 
 
