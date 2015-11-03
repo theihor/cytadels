@@ -1,34 +1,34 @@
-"name","price","value","color","count","text"
-"Tavern",1,1,"GREEN",5,
-"Market",2,2,"GREEN",4,
-"Shop",2,2,"GREEN",3,
-"Port",3,3,"GREEN",3,
-"Harbor",4,4,"GREEN",3,
-"Town hall",5,5,"GREEN",2,
-"Manor",3,3,"YELLOW",5,
-"Castle",4,4,"YELLOW",4,
-"Palace",5,5,"YELLOW",3,
-"Watchtower",1,1,"RED",3,
-"Prison",2,2,"RED",3,
-"Arena",3,3,"RED",3,
-"Fortress",5,5,"RED",2,
-"Chapel",1,1,"BLUE",3,
-"Church",2,2,"BLUE",3,
-"Monastery",3,3,"BLUE",3,
-"Cathedral",5,5,"BLUE",2,
-"Observatory",5,5,"PURPLE",1,"When your action is drawing a card, draw 3 instead of 2, choose one and rsicard the rest."
-"Ghost house",2,2,"PURPLE",1,"This card is of any color when you count final score."
-"Lab",5,5,"PURPLE",1,"Once a turn you can discard a card to get 1 Gold."
-"Fort",3,3,"PURPLE",2,"Warlord can not destroy Fort."
-"Dragon Gate",6,8,"PURPLE",1,
-"University",6,8,"PURPLE",1,
-"Cemetery",5,5,"PURPLE",1,"When Warlord destroys a building, you can spend 1 Gold to get this card to your hand."
-"Magic School",6,6,"PURPLE",1,"This card is of any color when you collect money."
-"Library",6,6,"PURPLE",1,"When you draw cards, keep both."
-"Forge",5,5,"PURPLE",1,"Once a turn you can spend 2 Gold to draw 3 cards."
-"Great Wall",6,6,"PURPLE",1,"Warlord must spend 1 more Gold to destroy your buildings."
-"Park",3,4,"PURPLE",5,
-"Temple",4,4,"BLUE",3,
-"Armory",4,4,"RED",3,
-"Circus",2,2,"YELLOW",3,
-"Collosus",7,10,"PURPLE",1,
+name,price,value,color,count,image,text
+Tavern,1,1,GREEN,5,tavern.png,
+Market,2,2,GREEN,4,market.png,
+Shop,2,2,GREEN,3,,
+Port,3,3,GREEN,3,port.png,
+Harbor,4,4,GREEN,3,harbor.png,
+Town hall,5,5,GREEN,2,,
+Manor,3,3,YELLOW,5,,
+Castle,4,4,YELLOW,4,castle.png,
+Palace,5,5,YELLOW,3,palace.png,
+Watchtower,1,1,RED,3,watchtower.png,
+Prison,2,2,RED,3,prison.png,
+Arena,3,3,RED,3,arena.png,
+Fortress,5,5,RED,2,,
+Chapel,1,1,BLUE,3,,
+Church,2,2,BLUE,3,church.png,
+Monastery,3,3,BLUE,3,monastery.png,
+Cathedral,5,5,BLUE,2,cathedral.png,
+Observatory,5,5,PURPLE,1,,"When your action is drawing a card, draw 3 instead of 2, choose one and rsicard the rest."
+Ghost house,2,2,PURPLE,1,,This card is of any color when you count final score.
+Lab,5,5,PURPLE,1,,Once a turn you can discard a card to get 1 Gold.
+Fort,3,3,PURPLE,2,,Warlord can not destroy Fort.
+Dragon Gate,6,8,PURPLE,1,,
+University,6,8,PURPLE,1,,
+Cemetery,5,5,PURPLE,1,,"When Warlord destroys a building, you can spend 1 Gold to get this card to your hand."
+Magic School,6,6,PURPLE,1,,This card is of any color when you collect money.
+Library,6,6,PURPLE,1,,"When you draw cards, keep both."
+Forge,5,5,PURPLE,1,,Once a turn you can spend 2 Gold to draw 3 cards.
+Great Wall,6,6,PURPLE,1,,Warlord must spend 1 more Gold to destroy your buildings.
+Park,3,4,PURPLE,5,,
+Temple,4,4,BLUE,3,,
+Armory,4,4,RED,3,,
+Circus,2,2,YELLOW,3,,
+Collosus,7,10,PURPLE,1,,

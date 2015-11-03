@@ -5,48 +5,23 @@ from card import *
 from math import ceil
 from random import random
 from pygame.sprite import *
+from loadimg import *
 
-def load_image(name, colorkey=None):
-    fullname = os.path.join('img', name)
-    image = pygame.image.load(fullname)
-    image = image.convert_alpha()
-    if colorkey is not None:
-        if colorkey is -1:
-            colorkey = image.get_at((0,0))
-            image.set_colorkey(colorkey, RLEACCEL)
-    return image
 
-def transparent_surface(size):
-    img = Surface(size)
-    img.fill(COLOR_TRANSPARENT)
-    img.set_colorkey(COLOR_TRANSPARENT)
-    return img
-
-class GameObject(Sprite):
-    def __init__(self, size=(0, 0), image=None):
-        Sprite.__init__(self)
-        self.children = Group()
+class GameObject():
+    def __init__(self, image=None, size=None):
         self.source_img = None
         if image:
             self.source_img = image
         else:
-            self.source_img = transparent_surface(size)
+            if size:
+                self.source_img = transparent_surface(size)
+            else:
+                self.source_img = transparent_surface((0, 0))
         self.image = self.source_img
         self.rect = self.image.get_rect()
-        self.update()
-
-    def update(self, mouse_pos=None):
-        #print("updated", self)
-        if mouse_pos:
-            (mx, my) = mouse_pos
-            (x, y) = self.pos()
-            self.children.update((mx - x, my - y))
-        self.children.update()
-        self.children.draw(self.image)
-
-    def add_object(self, obj):
-        self.children.add(obj)
-        self.update()
+        if size:
+            self.scale(size[0], size[1])
 
     def pos(self):
         return self.rect.topleft

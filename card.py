@@ -7,78 +7,30 @@ import pygame.font
 import pygame.draw
 import os.path
 from gameobject import *
+from loadimg import *
 
 
-
-
-class CardModel:
-    def __init__(self, name='Undefined', price=0, value=0, color=0, img_path=None):
-        self.name = name
-        self.price = price
-        self.value = value
-        self.color = color
-        self.img_path = img_path
-
-
-class Card(CardModel, GameObject):
-    def __init__(self, x=0, y=0, name='Undefined', price=0, value=0, color=0, img_path=None):
-        CardModel.__init__(self, name, price, value, color, img_path)
+class Card(GameObject):
+    def __init__(self):
         GameObject.__init__(self)
-        self.pos = (x, y)
         self.source_img = Surface(CARD_SIZE_DEFAULT)
         self.image = self.source_img
         self.rect = self.image.get_rect()
-        self.highlighted = False
 
     def update(self, mouse_pos=None):
         if mouse_pos:
-            #print(mouse_pos)
-            #print(self.rect)
             if self.rect.collidepoint(mouse_pos):
                 self.reset_img()
                 self.set_pos(self.rect.x, WINDOW_SIZE[1]-self.rect.h)
 
-    def draw(self, surface):
-        surface.blit(self.image, self.rect)
-
-
-    # def highlight(self):
-    #     self.highlighted = True
-    #     img = self.image
-    #     (w, h) = img.get_size()
-    #     k = 1.1
-    #     shift = ceil(w * (k - 1) / 2)
-    #     w = round(w * k)
-    #     h = round(h * k)
-    #     light = transparent_surface((w, h))
-    #     pygame.draw.rect(light, COLOR_YELLOW, light.get_rect(), width=10)
-    #     light.blit(img, (shift, shift))
-    #     self.image = light
-    #     (x, y) = self.pos()
-    #     self.set_pos(x - shift, x + shift)
-    #
-    # def unhighlight(self):
-    #     self.highlighted = False
-    #     img = self.image
-    #     (w, h) = img.get_size()
-    #     k = 1.1
-    #     shift = ceil(w * (k - 1) / 2)
-    #     w = round(w * k)
-    #     h = round(h * k)
-    #     light = transparent_surface((w, h))
-    #     pygame.draw.rect(light, COLOR_YELLOW, light.get_rect(), width=10)
-    #     light.blit(img, (shift, shift))
-    #     self.image = light
-    #     self.rect = Rect((self.rect.x - shift, self.rect.y - shift), light.get_size())
-
-
-        #if highlight and not self.highlighted: self.highlight()
-        #if not highlight and self.highlighted: self.unhighlight()
-
 
 class NoImgCard(Card):
-    def __init__(self, x=0, y=0, name='Undefined', price=0, value=0, color=0, img_path=None):
-        Card.__init__(self, x, y, name, price, value, color, img_path)
+    def __init__(self, card_dict):
+        Card.__init__(self)
+        self.name = card_dict['name']
+        self.price = card_dict['price']
+        self.value = card_dict['value']
+        self.color = card_dict['color']
         self.init_img()
 
     def init_img(self):
@@ -102,18 +54,41 @@ class NoImgCard(Card):
 
 
 class ImgCard(Card):
-    def __init__(self, img_file_name, x=0, y=0):
-        Sprite.__init__(self)
-        self.source_img = load_image(img_file_name)
+    def __init__(self, image, card_dict):
+        self.name = card_dict['name']
+        self.price = card_dict['price']
+        self.value = card_dict['value']
+        self.color = card_dict['color']
+
+        self.picture = image
+        self.source_img = self.picture.copy()
         self.image = self.source_img
         self.rect = self.image.get_rect()
-        self.set_pos(x, y)
-        self.picked = False
 
+        self.init_img()
 
+    def init_img(self):
+        self.source_img.blit(CARD_TEMPLATE_IMAGE, (0, 0))
 
+        f = pygame.font.Font(GLOBAL_FONT_FILE_NAME, self.rect.h // 12)
+        text = f.render(self.name, 1, COLOR_BLACK)
+        r = text.get_rect()
+        x = self.rect.w // 2 - r.w // 2
+        y = self.rect.h * 8 // 10 + 4
+        self.source_img.blit(text, (x, y))
 
+        (x, y) = (20, 20)
+        for i in range(self.price):
+            self.source_img.blit(COIN_MONEY_IMAGE, (x, y))
+            y += COIN_MONEY_IMAGE.get_rect().h + 5
+        for i in range(self.value - self.price):
+            self.source_img.blit(COIN_VALUE_IMAGE, (x, y))
+            y += COIN_VALUE_IMAGE.get_rect().h + 5
 
+        gem = GEM_IMAGES[self.color]
+        x = self.rect.w - gem.get_rect().w - 5
+        y = 5
+        self.source_img.blit(gem, (x, y))
 
-
+        self.reset_img()
 
