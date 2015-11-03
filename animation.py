@@ -2,13 +2,18 @@ from refresh import *
 
 
 def delay_animation(obj, time, drawable):
+    old_dp = obj.draw_priority
+    obj.draw_priority = 0
     ticks = round(time * GLOBAL_FPS)
     drawable.append(obj)
     for t in range(ticks):
         refresh_scene(drawable)
+    obj.draw_priority = old_dp
 
 
 def move_and_scale_animation(obj, new_pos, new_size, time, drawable):
+    old_dp = obj.draw_priority
+    obj.draw_priority = 0
     ticks = round(time * GLOBAL_FPS)
     (x1, y1) = obj.rect.topleft
     (w1, h1) = obj.rect.size
@@ -28,3 +33,4 @@ def move_and_scale_animation(obj, new_pos, new_size, time, drawable):
     obj.scale(w2, h2)
     obj.set_pos(x2, y2)
     refresh_scene(drawable)
+    obj.draw_priority = old_dp

@@ -58,6 +58,8 @@ pass
 
 
 class GameState:
+    the_deck = []
+
     def __init__(self):
         self.players = []
         self.deck = []
@@ -71,7 +73,10 @@ class GameState:
         random.shuffle(self.roles)
         self.choosing_stage = True
     pass
-    
+
+    def set_the_deck(self, deck):
+        self.the_deck = deck
+
     def new_round(self):
         self.killed = ('Noone', noone)
         self.robbed = ('Noone', noone)
@@ -80,9 +85,12 @@ class GameState:
         self.choosing_stage = True
     
     def refresh_deck(self):
-        self.deck = self.discarded
-        random.shuffle(self.deck)
-        self.discarded = []
+        if self.discarded:
+            self.deck = self.discarded
+            random.shuffle(self.deck)
+            self.discarded = []
+        else:
+            self.deck = self.the_deck.copy()
     
     def discard(self, cards):
         self.discarded += cards

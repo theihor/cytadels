@@ -35,7 +35,8 @@ def init_game():
     random.shuffle(deck)
     
     game_state = GameState()
-    game_state.deck = deck
+    game_state.set_the_deck(deck)
+    game_state.refresh_deck()
     
     for i in range(1, COUNT_OF_PLAYERS + 1):
         p = Player("Player " + str(i), i)

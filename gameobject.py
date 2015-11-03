@@ -8,9 +8,9 @@ from pygame.sprite import *
 from loadimg import *
 
 
-class GameObject():
+class GameObject:
     def __init__(self, image=None, size=None):
-        self.source_img = None
+        self.source_img = transparent_surface((0, 0))
         if image:
             self.source_img = image
         else:
@@ -22,6 +22,7 @@ class GameObject():
         self.rect = self.image.get_rect()
         if size:
             self.scale(size[0], size[1])
+        self.draw_priority = 100
 
     def pos(self):
         return self.rect.topleft

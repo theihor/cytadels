@@ -35,6 +35,7 @@ class PlayerHand:
             card.set_pos(x, y)
             self.cards.append(card)
             x += card_w + round(step)
+        self.draw_priority = 9
 
     def update(self, mouse_pos):
         for card in self.cards:
@@ -51,7 +52,11 @@ class Deck:
 
     def __init__(self, deck=[]):
         self.n = len(deck)
-        self.rect = Rect(DECK_POSITION, CARD_SIZE_DECK)
+        (w, h) = CARD_SIZE_DECK
+        w += round(2 * self.n * self.stepx)
+        h += round(2 * self.n * self.stepy)
+        self.rect = Rect(DECK_POSITION, (w, h))
+        self.draw_priority = 99
 
     def draw(self, surface):
         stepx = self.stepx
@@ -84,10 +89,6 @@ class Deck:
         (w, h) = CARD_SIZE_DECK
         card.scale(w, h)
         card.set_pos(x, y)
-        (dest_x, dest_y) = WINDOW_SIZE
-        # (dest_w, dest_h) = CARD_SIZE_DEFAULT
-        # dest_x = dest_x / 2 - dest_w / 2
-        # dest_y = dest_y / 2 - dest_h / 2
         (dest_x, dest_y) = (300, 20)
         cardback = get_cardback()
         cardback.scale(w, h)
@@ -111,18 +112,69 @@ class Deck:
         gs.human_player().hand += cards
 
 
+class CardSlot(GameObject):
+    def __init__(self, card=None, pos=None):
+        GameObject.__init__(self, SLOT_IMAGE.copy())
+        if pos: self.set_pos(pos[0], pos[1])
+        self.card = card
+        if card:
+            (w, h) = CARD_SIZE_SLOT
+            (x, y) = self.pos()
+            self.card.scale(w, h)
+            self.card.set_pos(x + 4, y + 4)
+        self.draw_priority = 80
+
+    def update(self, mouse_pos):
+        if self.rect.collidepoint(mouse_pos):
+            #print(mouse_pos)
+            if self.card:
+                self.card.update(mouse_pos)
 
 
+class PlayerFrame(GameObject):
+    def __init__(self, player, number):
+        GameObject.__init__(self, PLAYER_FRAME_IMAGE)
+        self.slots = []
+        (x, y) = self.frame_pos(number)
+        self.set_pos(x, y)
+        self.init_slots(player)
+        self.draw_priority = 90
 
+    @staticmethod
+    def frame_pos(number):
+        (x, y) = PLAYER_FRAME0_POS
+        for i in range(number):
+            x += (PLAYER_FRAME_IMAGE.get_rect().w * 1.03)
+            if i == 2:
+                y += (PLAYER_FRAME_IMAGE.get_rect().h * 1.05)
+                x = PLAYER_FRAME0_POS[0]
+        return x, y
 
+    def slot_pos(self, number):
+        (x, y) = (15, 15)
+        for i in range(number):
+            x += (SLOT_IMAGE.get_rect().w * 1.06)
+            if i == 3:
+                y += (SLOT_IMAGE.get_rect().h * 1.06)
+                x = 15
+        return x + self.rect.x, y + self.rect.y
 
+    def init_slots(self, player):
+        i = 0
+        for slot in player.slots:
+            card = card_from_dict(slot)
+            slot_obj = CardSlot(card, self.slot_pos(i))
+            self.slots.append(slot_obj)
+            i += 1
 
+        for i in range(len(self.slots), COUNT_OF_SLOTS):
+            slot_obj = CardSlot(pos=self.slot_pos(i))
+            self.slots.append(slot_obj)
 
-
-
-
-
-
+    def draw(self, surface):
+        surface.blit(self.image, self.rect)
+        for slot in self.slots:
+            slot.draw(surface)
 
 
 

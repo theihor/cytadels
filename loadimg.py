@@ -57,3 +57,6 @@ GEM_IMAGES = { 0: "grey.png",
 for k in GEM_IMAGES:
     name = GEM_IMAGES[k]
     GEM_IMAGES[k] = load_image(name)
+
+PLAYER_FRAME_IMAGE = load_image('frame.png')
+SLOT_IMAGE = load_image("slot_card.png")

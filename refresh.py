@@ -9,6 +9,7 @@ def refresh_scene(drawable=[]):
     clock.tick(GLOBAL_FPS)
     window.fill(COLOR_WHITE)
 
+    drawable.sort(key=lambda x: x.draw_priority, reverse=True)
     for obj in drawable:
         obj.draw(window)
 

@@ -16,12 +16,22 @@ class Card(GameObject):
         self.source_img = Surface(CARD_SIZE_DEFAULT)
         self.image = self.source_img
         self.rect = self.image.get_rect()
+        self.draw_priority = 20
 
     def update(self, mouse_pos=None):
         if mouse_pos:
             if self.rect.collidepoint(mouse_pos):
+                #print(mouse_pos)
+                self.draw_priority = 0
                 self.reset_img()
-                self.set_pos(self.rect.x, WINDOW_SIZE[1]-self.rect.h)
+                (x, y) = self.pos()
+                (w, h) = self.rect.size
+                if x + w > WINDOW_SIZE[0]:
+                    x = WINDOW_SIZE[0] - w
+                if y + h > WINDOW_SIZE[1]:
+                    y = WINDOW_SIZE[1] - h
+                self.set_pos(x, y)
+            #self.draw_priority = 20
 
 
 class NoImgCard(Card):
@@ -66,6 +76,8 @@ class ImgCard(Card):
         self.rect = self.image.get_rect()
 
         self.init_img()
+
+        self.draw_priority = 10
 
     def init_img(self):
         self.source_img.blit(CARD_TEMPLATE_IMAGE, (0, 0))
