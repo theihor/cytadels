@@ -25,3 +25,35 @@ def transparent_surface(size):
 # loading textures
 BACKGROUND_IMAGE = load_image("bg_table.png")
 CARD_BACK_IMAGE = load_image("card_back.png")
+CARD_TEMPLATE_IMAGE = load_image("card_template.png")
+
+CARDS = ["tavern.png",
+         "market.png",
+         "port.png",
+         "harbor.png",
+         "castle.png",
+         "palace.png",
+         "watchtower.png",
+         "prison.png",
+         "arena.png",
+         "church.png",
+         "monastery.png",
+         "cathedral.png"]
+
+CARD_IMAGES = {}
+for card_image_name in CARDS:
+    CARD_IMAGES[card_image_name] = load_image(os.path.join('cards', card_image_name))
+
+#FONT = pygame.font.Font(GLOBAL_FONT_FILE_NAME)
+COIN_MONEY_IMAGE = load_image("coin_yellow.png")
+COIN_VALUE_IMAGE = load_image("coin_grey.png")
+
+GEM_IMAGES = { 0: "grey.png",
+               1: "yellow.png",
+               2: "blue.png",
+               3: "green.png",
+               4: "red.png",
+               5: "violet.png"}
+for k in GEM_IMAGES:
+    name = GEM_IMAGES[k]
+    GEM_IMAGES[k] = load_image(name)

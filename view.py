@@ -12,8 +12,10 @@ from loadimg import *
 
 
 def card_from_dict(d):
-
-    card = NoImgCard(d)
+    if d['image']:
+        card = ImgCard(CARD_IMAGES[d['image']], d)
+    else:
+        card = NoImgCard(d)
     return card
 
 

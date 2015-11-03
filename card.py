@@ -54,8 +54,41 @@ class NoImgCard(Card):
 
 
 class ImgCard(Card):
-    def __init__(self, image):
-        self.source_img = image
+    def __init__(self, image, card_dict):
+        self.name = card_dict['name']
+        self.price = card_dict['price']
+        self.value = card_dict['value']
+        self.color = card_dict['color']
+
+        self.picture = image
+        self.source_img = self.picture.copy()
         self.image = self.source_img
         self.rect = self.image.get_rect()
+
+        self.init_img()
+
+    def init_img(self):
+        self.source_img.blit(CARD_TEMPLATE_IMAGE, (0, 0))
+
+        f = pygame.font.Font(GLOBAL_FONT_FILE_NAME, self.rect.h // 12)
+        text = f.render(self.name, 1, COLOR_BLACK)
+        r = text.get_rect()
+        x = self.rect.w // 2 - r.w // 2
+        y = self.rect.h * 8 // 10 + 4
+        self.source_img.blit(text, (x, y))
+
+        (x, y) = (20, 20)
+        for i in range(self.price):
+            self.source_img.blit(COIN_MONEY_IMAGE, (x, y))
+            y += COIN_MONEY_IMAGE.get_rect().h + 5
+        for i in range(self.value - self.price):
+            self.source_img.blit(COIN_VALUE_IMAGE, (x, y))
+            y += COIN_VALUE_IMAGE.get_rect().h + 5
+
+        gem = GEM_IMAGES[self.color]
+        x = self.rect.w - gem.get_rect().w - 5
+        y = 5
+        self.source_img.blit(gem, (x, y))
+
+        self.reset_img()
 
