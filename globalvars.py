@@ -45,7 +45,7 @@ HAND_SIZE = 4
 BONUS_COLORS = set(range(1, 6))
 
 # pygame
-GLOBAL_FPS = 10
+GLOBAL_FPS = 60
 
 WINDOW_SIZE = (1280, 720)
 

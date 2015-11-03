@@ -32,11 +32,14 @@ class Card(CardModel, GameObject):
 
     def update(self, mouse_pos=None):
         if mouse_pos:
-            print(mouse_pos)
-            print(self.rect)
+            #print(mouse_pos)
+            #print(self.rect)
             if self.rect.collidepoint(mouse_pos):
                 self.reset_img()
                 self.set_pos(self.rect.x, WINDOW_SIZE[1]-self.rect.h)
+
+    def draw(self, surface):
+        surface.blit(self.image, self.rect)
 
 
     # def highlight(self):

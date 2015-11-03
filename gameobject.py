@@ -23,16 +23,20 @@ def transparent_surface(size):
     return img
 
 class GameObject(Sprite):
-    def __init__(self, size=(0, 0)):
+    def __init__(self, size=(0, 0), image=None):
         Sprite.__init__(self)
         self.children = Group()
-        self.source_image = transparent_surface(size)
-        self.image = self.source_image
+        self.source_img = None
+        if image:
+            self.source_img = image
+        else:
+            self.source_img = transparent_surface(size)
+        self.image = self.source_img
         self.rect = self.image.get_rect()
         self.update()
 
     def update(self, mouse_pos=None):
-        print("updated", self)
+        #print("updated", self)
         if mouse_pos:
             (mx, my) = mouse_pos
             (x, y) = self.pos()
@@ -75,3 +79,12 @@ class GameObject(Sprite):
     def reset_img(self):
         self.image = self.source_img
         self.update_rect_size()
+
+    def draw(self, surface):
+        surface.blit(self.image, self.rect)
+
+    def set_rect(self, pos, size):
+        (x, y) = pos
+        self.set_pos(x ,y)
+        (w, h) = size
+        self.scale(w, h)
