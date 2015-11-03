@@ -18,7 +18,8 @@ def load_deck():
                 deck.append({'name' : row[0],
                             'price' : int(row[1]),
                             'value' : int(row[2]),
-                            'color' : GAME_COLOR[row[3]]})
+                            'color' : GAME_COLOR[row[3]],
+                            'image' : row[5]})
                 #print(deck[len(deck) - 1])
         pass
     return deck

@@ -1,4 +1,4 @@
-from globals import *
+from globalvars import *
 from game import *
 
 RUN_COUNT = 2000

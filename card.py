@@ -7,78 +7,30 @@ import pygame.font
 import pygame.draw
 import os.path
 from gameobject import *
+from loadimg import *
 
 
-
-
-class CardModel:
-    def __init__(self, name='Undefined', price=0, value=0, color=0, img_path=None):
-        self.name = name
-        self.price = price
-        self.value = value
-        self.color = color
-        self.img_path = img_path
-
-
-class Card(CardModel, GameObject):
-    def __init__(self, x=0, y=0, name='Undefined', price=0, value=0, color=0, img_path=None):
-        CardModel.__init__(self, name, price, value, color, img_path)
+class Card(GameObject):
+    def __init__(self):
         GameObject.__init__(self)
-        self.pos = (x, y)
         self.source_img = Surface(CARD_SIZE_DEFAULT)
         self.image = self.source_img
         self.rect = self.image.get_rect()
-        self.highlighted = False
 
     def update(self, mouse_pos=None):
         if mouse_pos:
-            #print(mouse_pos)
-            #print(self.rect)
             if self.rect.collidepoint(mouse_pos):
                 self.reset_img()
                 self.set_pos(self.rect.x, WINDOW_SIZE[1]-self.rect.h)
 
-    def draw(self, surface):
-        surface.blit(self.image, self.rect)
-
-
-    # def highlight(self):
-    #     self.highlighted = True
-    #     img = self.image
-    #     (w, h) = img.get_size()
-    #     k = 1.1
-    #     shift = ceil(w * (k - 1) / 2)
-    #     w = round(w * k)
-    #     h = round(h * k)
-    #     light = transparent_surface((w, h))
-    #     pygame.draw.rect(light, COLOR_YELLOW, light.get_rect(), width=10)
-    #     light.blit(img, (shift, shift))
-    #     self.image = light
-    #     (x, y) = self.pos()
-    #     self.set_pos(x - shift, x + shift)
-    #
-    # def unhighlight(self):
-    #     self.highlighted = False
-    #     img = self.image
-    #     (w, h) = img.get_size()
-    #     k = 1.1
-    #     shift = ceil(w * (k - 1) / 2)
-    #     w = round(w * k)
-    #     h = round(h * k)
-    #     light = transparent_surface((w, h))
-    #     pygame.draw.rect(light, COLOR_YELLOW, light.get_rect(), width=10)
-    #     light.blit(img, (shift, shift))
-    #     self.image = light
-    #     self.rect = Rect((self.rect.x - shift, self.rect.y - shift), light.get_size())
-
-
-        #if highlight and not self.highlighted: self.highlight()
-        #if not highlight and self.highlighted: self.unhighlight()
-
 
 class NoImgCard(Card):
-    def __init__(self, x=0, y=0, name='Undefined', price=0, value=0, color=0, img_path=None):
-        Card.__init__(self, x, y, name, price, value, color, img_path)
+    def __init__(self, card_dict):
+        Card.__init__(self)
+        self.name = card_dict['name']
+        self.price = card_dict['price']
+        self.value = card_dict['value']
+        self.color = card_dict['color']
         self.init_img()
 
     def init_img(self):
@@ -102,18 +54,8 @@ class NoImgCard(Card):
 
 
 class ImgCard(Card):
-    def __init__(self, img_file_name, x=0, y=0):
-        Sprite.__init__(self)
-        self.source_img = load_image(img_file_name)
+    def __init__(self, image):
+        self.source_img = image
         self.image = self.source_img
         self.rect = self.image.get_rect()
-        self.set_pos(x, y)
-        self.picked = False
-
-
-
-
-
-
-
 
