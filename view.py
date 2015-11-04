@@ -29,6 +29,9 @@ class PlayerHand:
         (card_w, card_h) = CARD_SIZE_HAND
         step = HAND_STEP
         (x, y) = HAND_POSITION
+        #x = WINDOW_SIZE[0] // 2
+        #x -= card_w // 2
+        #x -= (card_w + round(step)) * (len(hand) - 1) // 2
         for d in hand:
             card = card_from_dict(d)
             card.scale(card_w, card_h)
@@ -113,12 +116,19 @@ class Deck:
 
 
 class CardSlot(GameObject):
-    def __init__(self, card=None, pos=None):
-        GameObject.__init__(self, SLOT_IMAGE.copy())
+    def __init__(self, card=None, pos=None, main=False):
+        self.main = main
+        if main:
+            GameObject.__init__(self, MAIN_SLOT_IMAGE.copy())
+        else:
+            GameObject.__init__(self, SLOT_IMAGE.copy())
         if pos: self.set_pos(pos[0], pos[1])
         self.card = card
         if card:
-            (w, h) = CARD_SIZE_SLOT
+            if self.main:
+                (w, h) = CARD_SIZE_MAIN_SLOT
+            else:
+                (w, h) = CARD_SIZE_SLOT
             (x, y) = self.pos()
             self.card.scale(w, h)
             self.card.set_pos(x + 4, y + 4)
@@ -177,4 +187,26 @@ class PlayerFrame(GameObject):
             slot.draw(surface)
 
 
+class HumanPlayerFrame:
+    def __init__(self, player):
+        self.slots = []
+        self.init_slots(player)
 
+    @staticmethod
+    def slot_pos(number):
+        (x, y) = HUMAN_PLAYER_FRAME_POS
+        for i in range(number):
+            x += (MAIN_SLOT_IMAGE.get_rect().w * 1.06)
+        return x, y
+
+    def init_slots(self, player):
+        i = 0
+        for slot in player.slots:
+            card = card_from_dict(slot)
+            slot_obj = CardSlot(card, self.slot_pos(i), main=True)
+            self.slots.append(slot_obj)
+            i += 1
+
+        for i in range(len(self.slots), COUNT_OF_SLOTS):
+            slot_obj = CardSlot(pos=self.slot_pos(i), main=True)
+            self.slots.append(slot_obj)

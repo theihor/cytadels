@@ -33,6 +33,14 @@ def get_view(gs):
             if slot.card:
                 drawable.append(slot.card)
 
+    p = gs.human_player()
+    frame = HumanPlayerFrame(p)
+    for slot in frame.slots:
+        drawable.append(slot)
+        updatable.append(slot)
+        if slot.card:
+            drawable.append(slot.card)
+
     player_hand = PlayerHand(gs.human_player().hand)
     drawable.append(player_hand)
     updatable.append(player_hand)

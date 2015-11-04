@@ -60,3 +60,4 @@ for k in GEM_IMAGES:
 
 PLAYER_FRAME_IMAGE = load_image('frame.png')
 SLOT_IMAGE = load_image("slot_card.png")
+MAIN_SLOT_IMAGE = load_image("main_slot_card.png")
