@@ -144,11 +144,15 @@ class CardSlot(GameObject):
 class PlayerFrame(GameObject):
     def __init__(self, player, number):
         GameObject.__init__(self, PLAYER_FRAME_IMAGE)
+        self.player = player
         self.slots = []
         (x, y) = self.frame_pos(number)
         self.set_pos(x, y)
         self.init_slots(player)
         self.draw_priority = 90
+
+        self.portrait = PORTRAIT_UNKNOWN_IMAGE
+
 
     @staticmethod
     def frame_pos(number):
@@ -181,10 +185,38 @@ class PlayerFrame(GameObject):
             slot_obj = CardSlot(pos=self.slot_pos(i))
             self.slots.append(slot_obj)
 
+    def portrait_pos(self):
+        (x, y) = self.pos()
+        slot_w = SLOT_IMAGE.get_rect().w
+        x += round(slot_w * 1.06 * 4) + 13
+        y += self.rect.h // 2 - PLAYER_PORTRAIT_FRAME_IMAGE.get_rect().h // 2
+        return x, y
+
+    def score_pos(self):
+        (x, y) = self.pos()
+        slot_w = SLOT_IMAGE.get_rect().w
+        x += round(slot_w * 1.06 * 4) + 12
+        y = 18
+        return x, y
+
+
     def draw(self, surface):
         surface.blit(self.image, self.rect)
+
         for slot in self.slots:
             slot.draw(surface)
+
+        pos = self.portrait_pos()
+        surface.blit(PLAYER_PORTRAIT_FRAME_IMAGE, pos)
+        surface.blit(self.portrait, pos)
+
+        # f = pygame.font.Font(GLOBAL_FONT_FILE_NAME, self.rect.h // 6)
+        # text = f.render(str(self.player.base_score()), 1, COLOR_BLACK)
+        # surface.blit(text, self.score_pos())
+
+
+
+
 
 
 class HumanPlayerFrame:
@@ -210,3 +242,4 @@ class HumanPlayerFrame:
         for i in range(len(self.slots), COUNT_OF_SLOTS):
             slot_obj = CardSlot(pos=self.slot_pos(i), main=True)
             self.slots.append(slot_obj)
+

@@ -27,6 +27,9 @@ class GameObject:
     def pos(self):
         return self.rect.topleft
 
+    def size(self):
+        return self.rect.size
+
     def set_pos(self, x, y):
         self.rect = self.image.get_rect()
         self.rect.x = x
