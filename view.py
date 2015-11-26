@@ -142,17 +142,28 @@ class CardSlot(GameObject):
 
 
 class PlayerFrame(GameObject):
-    def __init__(self, player, number):
-        GameObject.__init__(self, PLAYER_FRAME_IMAGE)
+    def __init__(self, player, number, killed=False):
+        GameObject.__init__(self, PLAYER_FRAME_IMAGE.copy())
         self.player = player
         self.slots = []
         (x, y) = self.frame_pos(number)
         self.set_pos(x, y)
         self.init_slots(player)
         self.draw_priority = 90
-
         self.portrait = PORTRAIT_UNKNOWN_IMAGE
+        self.make_portrait(player, killed)
 
+    def make_portrait(self, player, killed):
+        if player.revealed:
+            f = pygame.font.Font(GLOBAL_FONT_FILE_NAME, self.rect.h // 15)
+            text = f.render(player.role[0], 1, COLOR_RED)
+            self.portrait = Surface(PORTRAIT_UNKNOWN_IMAGE.get_rect().size)
+            self.portrait.blit(text, (20, 20))
+            if killed:
+                text = f.render("KILLED", 1, COLOR_RED)
+                self.portrait.blit(text, (20, 50))
+        else:
+            self.portrait = PORTRAIT_UNKNOWN_IMAGE
 
     @staticmethod
     def frame_pos(number):
@@ -186,37 +197,67 @@ class PlayerFrame(GameObject):
             self.slots.append(slot_obj)
 
     def portrait_pos(self):
-        (x, y) = self.pos()
+        #(x, y) = self.pos()
         slot_w = SLOT_IMAGE.get_rect().w
-        x += round(slot_w * 1.06 * 4) + 13
-        y += self.rect.h // 2 - PLAYER_PORTRAIT_FRAME_IMAGE.get_rect().h // 2
+        x = round(slot_w * 1.06 * 4) + 13
+        y = self.rect.h // 2 - PLAYER_PORTRAIT_FRAME_IMAGE.get_rect().h // 2 - 5
         return x, y
 
-    def score_pos(self):
-        (x, y) = self.pos()
+    def score_pos(self, value_rect):
+        #(x, y) = self.pos()
         slot_w = SLOT_IMAGE.get_rect().w
-        x += round(slot_w * 1.06 * 4) + 12
-        y = 18
+        x = round(slot_w * 1.06 * 4)
+        x += (PLAYER_PORTRAIT_FRAME_IMAGE.get_rect().w // 2 - value_rect.w) // 2
+        y = 12
         return x, y
 
+    def money_icon_pos(self):
+        #(x, y) = self.pos()
+        slot_w = SLOT_IMAGE.get_rect().w
+        x = round(slot_w * 1.06 * 4) + 15
+        y = PLAYER_FRAME_IMAGE.get_rect().h - MONEY_ICON.get_rect().h - 12
+        return x, y
+
+    def money_pos(self, value_rect):
+        (x, y) = self.money_icon_pos()
+        x += MONEY_ICON.get_rect().h + 4
+        y += (MONEY_ICON.get_rect().h - value_rect.h) // 2
+        return x, y
+
+    def cards_icon_pos(self):
+        #(x, y) = self.pos()
+        (x, y) = self.money_icon_pos()
+        x += PLAYER_PORTRAIT_FRAME_IMAGE.get_rect().w // 2
+        return x, y
+
+    def cards_value_pos(self, value_rect):
+        (x, y) = self.cards_icon_pos()
+        x += CARDS_ICON.get_rect().h + 1
+        y += (CARDS_ICON.get_rect().h - value_rect.h) // 2
+        return x, y
 
     def draw(self, surface):
-        surface.blit(self.image, self.rect)
-
+        self.reset_img()
         for slot in self.slots:
             slot.draw(surface)
 
         pos = self.portrait_pos()
-        surface.blit(PLAYER_PORTRAIT_FRAME_IMAGE, pos)
-        surface.blit(self.portrait, pos)
+        self.image.blit(PLAYER_PORTRAIT_FRAME_IMAGE, pos)
+        self.image.blit(self.portrait, pos)
 
-        # f = pygame.font.Font(GLOBAL_FONT_FILE_NAME, self.rect.h // 6)
-        # text = f.render(str(self.player.base_score()), 1, COLOR_BLACK)
-        # surface.blit(text, self.score_pos())
+        f = pygame.font.Font(GLOBAL_FONT_FILE_NAME, self.rect.h // 10)
+        text = f.render(str(self.player.base_score()), 1, COLOR_BLACK)
+        self.image.blit(text, self.score_pos(text.get_rect()))
 
+        self.image.blit(MONEY_ICON, self.money_icon_pos())
+        text = f.render(str(self.player.money), 1, COLOR_BLACK)
+        self.image.blit(text, self.money_pos(text.get_rect()))
 
+        self.image.blit(CARDS_ICON, self.cards_icon_pos())
+        text = f.render(str(len(self.player.hand)), 1, COLOR_BLACK)
+        self.image.blit(text, self.cards_value_pos(text.get_rect()))
 
-
+        surface.blit(self.image, self.rect)
 
 
 class HumanPlayerFrame:

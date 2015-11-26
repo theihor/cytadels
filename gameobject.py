@@ -56,7 +56,7 @@ class GameObject:
         self.update_rect_size()
 
     def reset_img(self):
-        self.image = self.source_img
+        self.image = self.source_img.copy()
         self.update_rect_size()
 
     def draw(self, surface):

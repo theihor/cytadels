@@ -5,7 +5,7 @@ clock = pygame.time.Clock()
 window = pygame.display.set_mode(WINDOW_SIZE)
 
 
-def refresh_scene(drawable=[]):
+def refresh_scene(drawable=DRAWABLE):
     clock.tick(GLOBAL_FPS)
     window.fill(COLOR_WHITE)
 

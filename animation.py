@@ -1,7 +1,9 @@
 from refresh import *
+from globalvars import *
+from gameobject import GameObject
 
 
-def delay_animation(obj, time, drawable):
+def delay_animation(obj, time, drawable=DRAWABLE):
     old_dp = obj.draw_priority
     obj.draw_priority = 0
     ticks = round(time * GLOBAL_FPS)
@@ -11,7 +13,7 @@ def delay_animation(obj, time, drawable):
     obj.draw_priority = old_dp
 
 
-def move_and_scale_animation(obj, new_pos, new_size, time, drawable):
+def move_and_scale_animation(obj, new_pos, new_size, time, drawable=DRAWABLE):
     old_dp = obj.draw_priority
     obj.draw_priority = 0
     ticks = round(time * GLOBAL_FPS)
@@ -34,3 +36,26 @@ def move_and_scale_animation(obj, new_pos, new_size, time, drawable):
     obj.set_pos(x2, y2)
     refresh_scene(drawable)
     obj.draw_priority = old_dp
+
+
+def show_message(s, time=0.7, drawable=DRAWABLE):
+    ticks = round(time * GLOBAL_FPS)
+    (w, h) = WINDOW_SIZE
+    f = pygame.font.Font(GLOBAL_FONT_FILE_NAME, w // 20)
+    text = f.render(s, 1, COLOR_WHITE, COLOR_BLACK)
+    obj = GameObject(image=text)
+    obj.set_pos((w - text.get_rect().w) // 2, (h - text.get_rect().h) // 2)
+    drawable.append(obj)
+    obj.draw_priority = 0
+    for t in range(ticks):
+        refresh_scene(drawable)
+    drawable.remove(obj)
+
+
+def choice_pos(i, n):
+    if n <= 3:
+        return i
+
+def choosing(choosable, drawable):
+    n = len(choosable)
+

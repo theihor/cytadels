@@ -11,6 +11,7 @@ class Player:
         self.money = 2
         self.slots = []
         self.hand = []
+        self.revealed = False
     pass
 
     role = ('Noone', noone)

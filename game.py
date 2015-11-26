@@ -7,6 +7,7 @@ import random
 
 def do_turn(gs):
     p = gs.player()
+    p.revealed = True
     if p.role == gs.killed: 
         log(p.roled_name() + ' is killed and skips his turn!')
         return
@@ -20,7 +21,7 @@ def do_turn(gs):
         gs.crown_owner = p.id
         
     if random.random() <= 0.99:
-        play_role = random.randint(0,2)
+        play_role = random.randint(0, 2)
         if play_role == 0:
             p.role[1](p, gs)
             p.act_random(gs)
@@ -43,13 +44,16 @@ def do_turn(gs):
         p.build_random(gs)
 pass
 
+
 def choose_role(gs):
     p = gs.player()
     p.role = random.choice(gs.roles)
     gs.roles.remove(p.role)
 
 
-def run_round(gs):
+def init_round(gs):
+    gs.round += 1
+    gs.new_round()
     log('Round ' + str(gs.round))
     gs.current_player = 0
     while gs.current_player < COUNT_OF_PLAYERS:
@@ -58,22 +62,29 @@ def run_round(gs):
         log(str([role[0] for role in gs.roles]))
         choose_role(gs)
         log(p.name + ' have choosed a ' + p.role[0])
+        p.revealed = False
         gs.inc_player()
     gs.choosing_stage = False
-    
-    gs.current_player = 0  
+    gs.current_player = 0
+
+
+def next_turn(gs):
+    log('Turn of ' + CHARACTERS[gs.current_player][0])
+    p = gs.player()
+    if p:
+        log(p.name + ' is ' + CHARACTERS[gs.current_player][0])
+        do_turn(gs)
+    else:
+        log('There is no ' + CHARACTERS[gs.current_player][0] + '.')
+    gs.inc_player()
+
+
+def run_round(gs):
+    init_round()
     while gs.current_player < len(CHARACTERS):
-        log('Turn of ' + CHARACTERS[gs.current_player][0])
-        p = gs.player()
-        if p: 
-            log(p.name + ' is ' + CHARACTERS[gs.current_player][0])
-            do_turn(gs)
-        else:
-            log('There is no ' + CHARACTERS[gs.current_player][0] + '.')
-        gs.inc_player()
-       
-    gs.round += 1
-    gs.new_round()
+        next_turn(gs)
+pass
+
     
     
 def run_game():
@@ -93,4 +104,4 @@ def run_game():
     close_log()
     return (game_state, winner)
     
-run_game()
+#run_game()

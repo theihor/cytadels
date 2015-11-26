@@ -104,3 +104,10 @@ class ImgCard(Card):
 
         self.reset_img()
 
+
+class CharacterCard(GameObject):
+    def __init__(self, name):
+        GameObject.__init__(self)
+        self.source_img = Surface(CARD_SIZE_DEFAULT)
+        self.reset_img()
+        self.draw_priority = 20

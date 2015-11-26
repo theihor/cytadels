@@ -8,6 +8,8 @@ from view import *
 from refresh import *
 import game
 import log
+import animation
+from characters import CHARACTERS
 
 pygame.init()
 log.init_log()
@@ -25,7 +27,7 @@ def get_view(gs):
 
     for i in range(COUNT_OF_PLAYERS - 1):
         p = gs.players[i+1]
-        frame = PlayerFrame(p, i)
+        frame = PlayerFrame(p, i, p.role == gs.killed)
         drawable.append(frame)
         for slot in frame.slots:
             drawable.append(slot)
@@ -51,6 +53,7 @@ def get_view(gs):
 
     return(drawable, updatable, clickable)
 
+game.init_round(gs)
 
 while not gs.end():
     (drawable, updatable, clickable) = get_view(gs)
@@ -69,7 +72,8 @@ while not gs.end():
                 if obj.rect.collidepoint(mp):
                     obj.on_click(gs, mp, drawable)
         if e.type == pygame.MOUSEBUTTONDOWN and e.button == 3:
-            game.run_round(gs)
-            log.log_full_game_state(gs)
-
+            if gs.current_player < len(CHARACTERS):
+                game.next_turn(gs)
+            else:
+                game.init_round(gs)
 
