@@ -3,7 +3,6 @@ import sys
 from globalvars import *
 from card import *
 from math import ceil
-from random import random
 from pygame.sprite import *
 from loadimg import *
 

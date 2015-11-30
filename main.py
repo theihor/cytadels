@@ -17,6 +17,7 @@ log.init_log()
 pygame.display.set_caption('Citadels')
 gs = init_game()
 
+
 def get_view(gs):
     drawable = []
     updatable = []
@@ -27,7 +28,7 @@ def get_view(gs):
 
     for i in range(COUNT_OF_PLAYERS - 1):
         p = gs.players[i+1]
-        frame = PlayerFrame(p, i, p.role == gs.killed)
+        frame = AIPlayerFrame(p, i, p.role == gs.killed)
         drawable.append(frame)
         for slot in frame.slots:
             drawable.append(slot)
@@ -36,7 +37,8 @@ def get_view(gs):
                 drawable.append(slot.card)
 
     p = gs.human_player()
-    frame = HumanPlayerFrame(p)
+    frame = HumanPlayerFrame(p, p.role == gs.killed)
+    drawable.append(frame)
     for slot in frame.slots:
         drawable.append(slot)
         updatable.append(slot)
@@ -51,7 +53,8 @@ def get_view(gs):
     drawable.append(deck)
     clickable.append(deck)
 
-    return(drawable, updatable, clickable)
+    return drawable, updatable, clickable
+
 
 game.init_round(gs)
 
@@ -73,7 +76,7 @@ while not gs.end():
                     obj.on_click(gs, mp, drawable)
         if e.type == pygame.MOUSEBUTTONDOWN and e.button == 3:
             if gs.current_player < len(CHARACTERS):
-                game.next_turn(gs)
+                game.next_turn(gs, drawable)
             else:
                 game.init_round(gs)
 

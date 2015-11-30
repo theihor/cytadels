@@ -4,7 +4,6 @@ import sys
 from globalvars import *
 from card import *
 from math import ceil
-from random import random
 from pygame.sprite import *
 from gameobject import *
 from animation import *
@@ -142,38 +141,15 @@ class CardSlot(GameObject):
 
 
 class PlayerFrame(GameObject):
-    def __init__(self, player, number, killed=False):
-        GameObject.__init__(self, PLAYER_FRAME_IMAGE.copy())
+    def __init__(self, player, killed=False):
+        GameObject.__init__(self)
         self.player = player
         self.slots = []
-        (x, y) = self.frame_pos(number)
-        self.set_pos(x, y)
-        self.init_slots(player)
         self.draw_priority = 90
         self.portrait = PORTRAIT_UNKNOWN_IMAGE
-        self.make_portrait(player, killed)
-
-    def make_portrait(self, player, killed):
-        if player.revealed:
-            f = pygame.font.Font(GLOBAL_FONT_FILE_NAME, self.rect.h // 15)
-            text = f.render(player.role[0], 1, COLOR_RED)
-            self.portrait = Surface(PORTRAIT_UNKNOWN_IMAGE.get_rect().size)
-            self.portrait.blit(text, (20, 20))
-            if killed:
-                text = f.render("KILLED", 1, COLOR_RED)
-                self.portrait.blit(text, (20, 50))
-        else:
-            self.portrait = PORTRAIT_UNKNOWN_IMAGE
-
-    @staticmethod
-    def frame_pos(number):
-        (x, y) = PLAYER_FRAME0_POS
-        for i in range(number):
-            x += (PLAYER_FRAME_IMAGE.get_rect().w * 1.03)
-            if i == 2:
-                y += (PLAYER_FRAME_IMAGE.get_rect().h * 1.05)
-                x = PLAYER_FRAME0_POS[0]
-        return x, y
+        self.killed = killed
+        self.make_portrait()
+        self.init_slots()
 
     def slot_pos(self, number):
         (x, y) = (15, 15)
@@ -184,39 +160,42 @@ class PlayerFrame(GameObject):
                 x = 15
         return x + self.rect.x, y + self.rect.y
 
-    def init_slots(self, player):
+    def init_slots(self):
         i = 0
-        for slot in player.slots:
+        for slot in self.player.slots:
             card = card_from_dict(slot)
             slot_obj = CardSlot(card, self.slot_pos(i))
             self.slots.append(slot_obj)
             i += 1
-
         for i in range(len(self.slots), COUNT_OF_SLOTS):
             slot_obj = CardSlot(pos=self.slot_pos(i))
             self.slots.append(slot_obj)
 
     def portrait_pos(self):
-        #(x, y) = self.pos()
         slot_w = SLOT_IMAGE.get_rect().w
         x = round(slot_w * 1.06 * 4) + 13
         y = self.rect.h // 2 - PLAYER_PORTRAIT_FRAME_IMAGE.get_rect().h // 2 - 5
         return x, y
 
-    def score_pos(self, value_rect):
-        #(x, y) = self.pos()
+    @staticmethod
+    def score_pos(value_rect):
         slot_w = SLOT_IMAGE.get_rect().w
         x = round(slot_w * 1.06 * 4)
         x += (PLAYER_PORTRAIT_FRAME_IMAGE.get_rect().w // 2 - value_rect.w) // 2
         y = 12
         return x, y
 
-    def money_icon_pos(self):
-        #(x, y) = self.pos()
+    @staticmethod
+    def money_icon_pos():
         slot_w = SLOT_IMAGE.get_rect().w
         x = round(slot_w * 1.06 * 4) + 15
         y = PLAYER_FRAME_IMAGE.get_rect().h - MONEY_ICON.get_rect().h - 12
         return x, y
+
+    def global_money_icon_pos(self):
+        (x1, y1) = self.money_icon_pos()
+        (x, y) = self.pos()
+        return x + x1, y + y1
 
     def money_pos(self, value_rect):
         (x, y) = self.money_icon_pos()
@@ -225,7 +204,6 @@ class PlayerFrame(GameObject):
         return x, y
 
     def cards_icon_pos(self):
-        #(x, y) = self.pos()
         (x, y) = self.money_icon_pos()
         x += PLAYER_PORTRAIT_FRAME_IMAGE.get_rect().w // 2
         return x, y
@@ -235,6 +213,18 @@ class PlayerFrame(GameObject):
         x += CARDS_ICON.get_rect().h + 1
         y += (CARDS_ICON.get_rect().h - value_rect.h) // 2
         return x, y
+
+    def make_portrait(self):
+        if self.player.revealed:
+            f = pygame.font.Font(GLOBAL_FONT_FILE_NAME, self.rect.h // 15)
+            text = f.render(self.player.role[0], 1, COLOR_RED)
+            self.portrait = Surface(PORTRAIT_UNKNOWN_IMAGE.get_rect().size)
+            self.portrait.blit(text, (20, 20))
+            if self.killed:
+                text = f.render("KILLED", 1, COLOR_RED)
+                self.portrait.blit(text, (20, 50))
+        else:
+            self.portrait = PORTRAIT_UNKNOWN_IMAGE
 
     def draw(self, surface):
         self.reset_img()
@@ -260,10 +250,33 @@ class PlayerFrame(GameObject):
         surface.blit(self.image, self.rect)
 
 
-class HumanPlayerFrame:
-    def __init__(self, player):
+class AIPlayerFrame(PlayerFrame):
+    def __init__(self, player, number, killed=False):
+        GameObject.__init__(self, PLAYER_FRAME_IMAGE.copy())
+        self.player = player
         self.slots = []
-        self.init_slots(player)
+        self.draw_priority = 90
+        self.portrait = PORTRAIT_UNKNOWN_IMAGE
+        self.killed = killed
+        self.make_portrait()
+        (x, y) = self.frame_pos(number)
+        self.set_pos(x, y)
+        self.init_slots()
+
+    @staticmethod
+    def frame_pos(number):
+        (x, y) = PLAYER_FRAME0_POS
+        for i in range(number):
+            x += (PLAYER_FRAME_IMAGE.get_rect().w * 1.03)
+            if i == 2:
+                y += (PLAYER_FRAME_IMAGE.get_rect().h * 1.05)
+                x = PLAYER_FRAME0_POS[0]
+        return x, y
+
+
+class HumanPlayerFrame(PlayerFrame):
+    def __init__(self, player, killed=False):
+        PlayerFrame.__init__(self, player, killed=killed)
 
     @staticmethod
     def slot_pos(number):
@@ -272,9 +285,9 @@ class HumanPlayerFrame:
             x += (MAIN_SLOT_IMAGE.get_rect().w * 1.06)
         return x, y
 
-    def init_slots(self, player):
+    def init_slots(self):
         i = 0
-        for slot in player.slots:
+        for slot in self.player.slots:
             card = card_from_dict(slot)
             slot_obj = CardSlot(card, self.slot_pos(i), main=True)
             self.slots.append(slot_obj)
@@ -283,4 +296,7 @@ class HumanPlayerFrame:
         for i in range(len(self.slots), COUNT_OF_SLOTS):
             slot_obj = CardSlot(pos=self.slot_pos(i), main=True)
             self.slots.append(slot_obj)
+
+    def global_money_icon_pos(self):
+        return 1000, 600
 

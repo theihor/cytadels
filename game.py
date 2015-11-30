@@ -1,11 +1,10 @@
 from log import *
-from globalvars import *
 from characters import *
 import game_init
-import random
+from actions import *
 
 
-def do_turn(gs):
+def do_turn(gs, drawable):
     p = gs.player()
     p.revealed = True
     if p.role == gs.killed: 
@@ -13,8 +12,9 @@ def do_turn(gs):
         return
     if p.role == gs.robbed:
         robber = next(p for p in gs.players if p.role[0] == 'Thief')
-        robber.money += p.money
-        p.money = 0
+        #robber.money += p.money
+        #p.money = 0
+        action_rob(gs, drawable)
         log(p.roled_name() + ' is robbed by ' + robber.roled_name() + '!')
     if p.role[0] == 'King':
         log(p.roled_name() + ' gets the crown!')
@@ -68,12 +68,12 @@ def init_round(gs):
     gs.current_player = 0
 
 
-def next_turn(gs):
+def next_turn(gs, drawable):
     log('Turn of ' + CHARACTERS[gs.current_player][0])
     p = gs.player()
     if p:
         log(p.name + ' is ' + CHARACTERS[gs.current_player][0])
-        do_turn(gs)
+        do_turn(gs, drawable)
     else:
         log('There is no ' + CHARACTERS[gs.current_player][0] + '.')
     gs.inc_player()

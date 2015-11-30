@@ -144,3 +144,6 @@ class GameState:
 
     def human_player(self):
         return self.players[0]
+
+    def robber(self):
+        return next(p for p in self.players if p.role[0] == 'Thief')
