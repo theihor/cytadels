@@ -19,41 +19,49 @@ gs = init_game()
 
 
 def get_view(gs):
-    objects = []
+    scene = {}
 
     background = Drawable(BACKGROUND_IMAGE)
-    objects.append(background)
+    scene['background'] = [background]
 
+    scene['frames'] = []
+    scene['slots'] = []
+    scene['slot_cards'] = []
     for i in range(COUNT_OF_PLAYERS - 1):
         p = gs.players[i+1]
         frame = AIPlayerFrame(p, i, p.role == gs.killed)
-        objects.append(frame)
+        scene['frames'].append(frame)
         for slot in frame.slots:
-            objects.append(slot)
+            scene['slots'].append(slot)
             if slot.card:
-                objects.append(slot.card)
+                scene['slot_cards'].append(slot.card)
 
     p = gs.human_player()
     frame = HumanPlayerFrame(p, p.role == gs.killed)
-    objects.append(frame)
+    scene['human_player_frame'] = [frame]
+    scene['human_player_frame_slots'] = []
+    scene['human_player_frame_slot_cards'] = []
     for slot in frame.slots:
-        objects.append(slot)
+        scene['human_player_frame_slots'].append(slot)
         if slot.card:
-            objects.append(slot.card)
+            scene['human_player_frame_slot_cards'].append(slot.card)
 
     player_hand = PlayerHand(gs.human_player().hand)
-    objects.append(player_hand)
-    objects += player_hand.cards
+    scene['player_hand'] = [player_hand]
+    scene['player_hand_cards'] = player_hand.cards
 
     deck = Deck(gs.deck)
-    objects.append(deck)
+    scene['deck'] = [deck]
 
-    return objects
+    return scene
 
 
 game.init_round(gs)
 
-objects = get_view(gs)
+scene = get_view(gs)
+objects = []
+for key in scene:
+    objects += scene[key]
 
 while not gs.end():
     for obj in [obj for obj in objects if isinstance(obj, Updatable)]:
