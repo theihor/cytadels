@@ -101,22 +101,22 @@ def show_message(s, time=0.7, drawable=DRAWABLE):
     drawable.remove(obj)
 
 
-def open_card_animation(obj, new_pos, new_size, opened_pos=SHOW_CARD_POS, time=1, drawable=DRAWABLE):
-    (x, y) = DECK_POSITION
-    (w, h) = CARD_SIZE_DECK
-    obj.scale(w, h)
-    obj.set_pos(x, y)
-    (dest_x, dest_y) = SHOW_CARD_POS
+def open_card_animation(obj, new_pos, new_size, opened_pos=SHOW_CARD_POS, t=1, drawable=DRAWABLE):
+    (x, y) = obj.pos()
+    (w, h) = obj.size()
     cardback = get_cardback()
     cardback.scale(w, h)
     cardback.set_pos(x, y)
-    move_and_scale_animation(cardback, (x + w // 2, y), (0, h), 0.2, drawable)
-    obj.set_rect((x + w // 2, y), (0, h))
-    move_and_scale_animation(card, (x, y), (w, h), 0.2, drawable)
+    (ox, oy) = opened_pos
+    (ow, oh) = CARD_SIZE_DEFAULT
 
-    move_and_scale_animation(card, (dest_x, dest_y), CARD_SIZE_DEFAULT, 0.4, drawable)
-    delay_animation(card, 0.6, drawable)
-    move_and_scale_animation(card, hand_pos, CARD_SIZE_HAND, 0.3, drawable)
+    t1, t2 ,t3, t4 = t * 0.1, t * 0.15, t * 0.5, t * 0.25
+
+    move_and_scale_animation(cardback, (x + (ox - x) // 4, y + (oy - y) // 4), (0, oh // 4), t1, drawable)
+    obj.set_rect((x + (ox - x) // 4, y + (oy - y) // 4), (0, oh // 4))
+    move_and_scale_animation(obj, (ox, oy), CARD_SIZE_DEFAULT, t2, drawable)
+    delay_animation(obj, t3, drawable)
+    move_and_scale_animation(obj, new_pos, new_size, t4, drawable)
     pass
 
 

@@ -129,10 +129,7 @@ class CardSlot(Drawable):
         if pos: self.set_pos(pos[0], pos[1])
         self.card = card
         if card:
-            if self.main:
-                (w, h) = CARD_SIZE_MAIN_SLOT
-            else:
-                (w, h) = CARD_SIZE_SLOT
+            (w, h) = self.card_size()
             (x, y) = self.pos()
             self.card.scale(w, h)
             self.card.set_pos(x + 4, y + 4)
@@ -148,10 +145,20 @@ class CardSlot(Drawable):
             (w, h) = CARD_SIZE_MAIN_SLOT
         else:
             (w, h) = CARD_SIZE_SLOT
-        (x, y) = self.pos()
         self.card.scale(w, h)
-        self.card.set_pos(x + 4, y + 4)
+        (x, y) = self.card_pos()
+        self.card.set_pos(x, y)
         self.card.collide_rect = self.rect
+
+    def card_pos(self):
+        (x, y) = self.pos()
+        return x + 4, y + 4
+
+    def card_size(self):
+        if self.main:
+            return CARD_SIZE_MAIN_SLOT
+        else:
+            return CARD_SIZE_SLOT
 
 
 class PlayerFrame(Drawable):
@@ -222,6 +229,11 @@ class PlayerFrame(Drawable):
         x += PLAYER_PORTRAIT_FRAME_IMAGE.get_rect().w // 2
         return x, y
 
+    def global_cards_icon_pos(self):
+        (x1, y1) = self.cards_icon_pos()
+        (x, y) = self.pos()
+        return x + x1, y + y1
+
     def cards_value_pos(self, value_rect):
         (x, y) = self.cards_icon_pos()
         x += CARDS_ICON.get_rect().h + 1
@@ -240,11 +252,13 @@ class PlayerFrame(Drawable):
         else:
             self.portrait = PORTRAIT_UNKNOWN_IMAGE
 
-    def put_card_in_slots(self, card_dict, scene):
+    def put_card_in_slots(self, card, scene):
         slot = next(s for s in self.slots if not s.card)
-        card = card_from_dict(card_dict)
         slot.set_card(card)
         scene['slot_cards'].append(card)
+
+    def next_slot(self):
+        return next(s for s in self.slots if not s.card)
 
     def draw(self, surface):
         self.reset_img()
