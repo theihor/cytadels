@@ -6,7 +6,7 @@ from actions import *
 
 def p_build(scene, p):
     card = p.card_to_build()
-    if card:
+    if card and len(p.slots) < COUNT_OF_SLOTS:
         action_build(scene, p, card)
 
 

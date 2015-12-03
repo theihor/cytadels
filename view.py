@@ -263,6 +263,7 @@ class PlayerFrame(Drawable):
     def draw(self, surface):
         self.reset_img()
 
+        self.make_portrait()
         pos = self.portrait_pos()
         self.image.blit(PLAYER_PORTRAIT_FRAME_IMAGE, pos)
         self.image.blit(self.portrait, pos)
