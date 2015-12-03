@@ -26,7 +26,6 @@ class Card(Updatable):
             y = WINDOW_SIZE[1] - h
         self.set_pos(x, y)
 
-
     def on_mouse_out(self):
         if self.old_rect and self.mouse_over:
             self.draw_priority = 20

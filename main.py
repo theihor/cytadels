@@ -38,7 +38,7 @@ def get_view(gs):
 
     p = gs.human_player()
     frame = HumanPlayerFrame(p, p.role == gs.killed)
-    scene['human_player_frame'] = [frame]
+    scene['frames'].append(frame)
     scene['human_player_frame_slots'] = []
     scene['human_player_frame_slot_cards'] = []
     for slot in frame.slots:
@@ -59,19 +59,16 @@ def get_view(gs):
 game.init_round(gs)
 
 scene = get_view(gs)
-objects = []
-for key in scene:
-    objects += scene[key]
-
+objects = scene_objects(scene)
 while not gs.end():
+    objects = scene_objects(scene)
     for obj in [obj for obj in objects if isinstance(obj, Updatable)]:
         mp = pygame.mouse.get_pos()
         if obj.collides(mp):
             obj.on_mouse_over()
         else:
             obj.on_mouse_out()
-
-
+        pass
     refresh_scene(objects)
 
     for e in pygame.event.get():
@@ -84,7 +81,7 @@ while not gs.end():
                     obj.on_click(gs, objects)
         if e.type == pygame.MOUSEBUTTONDOWN and e.button == 3:
             if gs.current_player < len(CHARACTERS):
-                game.next_turn(gs, objects)
+                game.next_turn(gs, scene)
             else:
                 game.init_round(gs)
 

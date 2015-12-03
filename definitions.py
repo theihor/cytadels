@@ -31,6 +31,11 @@ class Player:
             log(self.roled_name() + ' keeps ' + str_card(card) + ' and now has ' + str(len(self.hand)) + ' cards.')
     pass
 
+    def card_to_build(self):
+        can_build = [card for card in self.hand if card['price'] <= self.money and not card in self.slots]
+        if can_build:
+            return random.choice(can_build)
+
     def build_random(self, gs):
         can_build = [card for card in self.hand if card['price'] <= self.money and not card in self.slots]
         if can_build:

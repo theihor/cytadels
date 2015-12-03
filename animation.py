@@ -1,6 +1,11 @@
 from refresh import *
 from globalvars import *
 from gameobject import *
+from math import hypot
+from loadimg import *
+
+def get_cardback():
+    return Drawable(CARD_BACK_IMAGE)
 
 
 def delay_animation(obj, time, drawable=DRAWABLE):
@@ -22,12 +27,33 @@ def move_animation(obj, new_pos, time, drawable=DRAWABLE):
     (vx, vy) = ((x2 - x1) / ticks, (y2 - y1) / ticks)
     drawable.append(obj)
     (x, y) = (x1, y1)
-    print(x1, y1)
-    print(x2, y2)
 
     for t in range(ticks):
         obj.set_pos(round(x), round(y))
         refresh_scene(drawable)
+        (x, y) = (x + vx, y + vy)
+    obj.set_pos(x2, y2)
+    refresh_scene(drawable)
+    obj.draw_priority = old_dp
+    drawable.remove(obj)
+
+
+def move_with_a_animation(obj, new_pos, time, drawable=DRAWABLE):
+    old_dp = obj.draw_priority
+    obj.draw_priority = 0
+    ticks = round(time * GLOBAL_FPS)
+    (x1, y1) = obj.pos()
+    (x2, y2) = new_pos
+    (vx, vy) = (0, 0)
+    ax = (x2 - x1) * 2 / (ticks ** 2)
+    ay = (y2 - y1) * 2 / (ticks ** 2)
+    drawable.append(obj)
+    (x, y) = (x1, y1)
+
+    for t in range(ticks):
+        obj.set_pos(round(x), round(y))
+        refresh_scene(drawable)
+        (vx, vy) = (vx + ax, vy + ay)
         (x, y) = (x + vx, y + vy)
     obj.set_pos(x2, y2)
     refresh_scene(drawable)

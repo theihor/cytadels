@@ -4,7 +4,13 @@ import game_init
 from actions import *
 
 
-def do_turn(gs, drawable):
+def p_build(scene, p):
+    card = p.card_to_build()
+    if card:
+        action_build(scene, p, card)
+
+
+def do_turn(gs, scene):
     p = gs.player()
     p.revealed = True
     if p.role == gs.killed: 
@@ -12,7 +18,7 @@ def do_turn(gs, drawable):
         return
     if p.role == gs.robbed:
         robber = next(p for p in gs.players if p.role[0] == 'Thief')
-        action_rob(gs, drawable)
+        action_rob(gs, scene)
         log(p.roled_name() + ' is robbed by ' + robber.roled_name() + '!')
     if p.role[0] == 'King':
         log(p.roled_name() + ' gets the crown!')
@@ -23,23 +29,23 @@ def do_turn(gs, drawable):
         if play_role == 0:
             p.role[1](p, gs)
             p.act_random(gs)
-            p.build_random(gs)
+            p_build(scene, p)
         elif play_role == 1:
             p.act_random(gs)
             p.role[1](p, gs)
-            p.build_random(gs)
+            p_build(scene, p)
         elif play_role == 2:
             p.act_random(gs)
-            p.build_random(gs)
+            p_build(scene, p)
             p.role[1](p, gs)
     else:
         log(p.roled_name() + ' is not using his ability.')
         p.act_random(gs)
-        p.build_random(gs)
+        p_build(scene, p)
         
     if p.role[0] == 'Architect':
-        p.build_random(gs)
-        p.build_random(gs)
+        p_build(scene, p)
+        p_build(scene, p)
 pass
 
 

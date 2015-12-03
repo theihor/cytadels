@@ -61,3 +61,10 @@ MONEY_ICON = load_image("coin_on_table.png")
 CARDS_ICON = load_image("card_on_table.png")
 
 PORTRAIT_UNKNOWN_IMAGE = load_image("unknown_hero.png")
+
+
+def scene_objects(scene):
+    objects = []
+    for key in scene:
+        objects += scene[key]
+    return objects

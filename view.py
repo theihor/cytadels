@@ -7,7 +7,7 @@ from math import ceil
 from pygame.sprite import *
 from gameobject import *
 from animation import *
-from loadimg import *
+
 
 
 def card_from_dict(d):
@@ -49,8 +49,6 @@ class PlayerHand(Drawable):
         card.collide_rect = card.rect.copy()
         self.cards.append(card)
 
-def get_cardback():
-    return Drawable(CARD_BACK_IMAGE)
 
 class Deck(Clickable):
     stepx = 0.2
@@ -121,13 +119,13 @@ class Deck(Clickable):
         gs.human_player().hand += cards
 
 
-class CardSlot(Updatable):
+class CardSlot(Drawable):
     def __init__(self, card=None, pos=None, main=False):
         self.main = main
         if main:
-            Updatable.__init__(self, MAIN_SLOT_IMAGE.copy())
+            Drawable.__init__(self, MAIN_SLOT_IMAGE.copy())
         else:
-            Updatable.__init__(self, SLOT_IMAGE.copy())
+            Drawable.__init__(self, SLOT_IMAGE.copy())
         if pos: self.set_pos(pos[0], pos[1])
         self.card = card
         if card:
@@ -143,6 +141,17 @@ class CardSlot(Updatable):
     def on_mouse_over(self):
         if self.card:
             self.card.on_mouse_over()
+
+    def set_card(self, card):
+        self.card = card
+        if self.main:
+            (w, h) = CARD_SIZE_MAIN_SLOT
+        else:
+            (w, h) = CARD_SIZE_SLOT
+        (x, y) = self.pos()
+        self.card.scale(w, h)
+        self.card.set_pos(x + 4, y + 4)
+        self.card.collide_rect = self.rect
 
 
 class PlayerFrame(Drawable):
@@ -231,10 +240,14 @@ class PlayerFrame(Drawable):
         else:
             self.portrait = PORTRAIT_UNKNOWN_IMAGE
 
+    def put_card_in_slots(self, card_dict, scene):
+        slot = next(s for s in self.slots if not s.card)
+        card = card_from_dict(card_dict)
+        slot.set_card(card)
+        scene['slot_cards'].append(card)
+
     def draw(self, surface):
         self.reset_img()
-        for slot in self.slots:
-            slot.draw(surface)
 
         pos = self.portrait_pos()
         self.image.blit(PLAYER_PORTRAIT_FRAME_IMAGE, pos)
