@@ -18,41 +18,46 @@ def card_from_dict(d):
     return card
 
 
-def get_cardback():
-    return GameObject(CARD_BACK_IMAGE)
-
-
-class PlayerHand:
+class PlayerHand(Drawable):
     def __init__(self, hand=[]):
+        GameObject.__init__(self, size=HAND_RECT_SIZE)
+        self.set_pos(HAND_POSITION[0], HAND_POSITION[1])
         self.cards = []
         (card_w, card_h) = CARD_SIZE_HAND
         step = HAND_STEP
         (x, y) = HAND_POSITION
-        #x = WINDOW_SIZE[0] // 2
-        #x -= card_w // 2
-        #x -= (card_w + round(step)) * (len(hand) - 1) // 2
         for d in hand:
             card = card_from_dict(d)
             card.scale(card_w, card_h)
             card.set_pos(x, y)
+            card.collide_rect = card.rect.copy()
             self.cards.append(card)
             x += card_w + round(step)
-        self.draw_priority = 9
-
-    def update(self, mouse_pos):
-        for card in self.cards:
-            card.update(mouse_pos)
+        self.draw_priority = 11
 
     def draw(self, surface):
-        for card in reversed(self.cards):
-            surface.blit(card.image, card.rect)
+        pass
 
+    def add_card(self, card):
+        (card_w, card_h) = CARD_SIZE_HAND
+        step = HAND_STEP
+        (x, y) = HAND_POSITION
+        for i in range(len(self.cards)):
+            x += card_w + round(step)
+        card.scale(card_w, card_h)
+        card.set_pos(x, y)
+        card.collide_rect = card.rect.copy()
+        self.cards.append(card)
 
-class Deck:
+def get_cardback():
+    return Drawable(CARD_BACK_IMAGE)
+
+class Deck(Clickable):
     stepx = 0.2
     stepy = 0.1
 
     def __init__(self, deck=[]):
+        Clickable.__init__(self)
         self.n = len(deck)
         (w, h) = CARD_SIZE_DECK
         w += round(2 * self.n * self.stepx)
@@ -91,7 +96,7 @@ class Deck:
         (w, h) = CARD_SIZE_DECK
         card.scale(w, h)
         card.set_pos(x, y)
-        (dest_x, dest_y) = (300, 20)
+        (dest_x, dest_y) = SHOW_CARD_POS
         cardback = get_cardback()
         cardback.scale(w, h)
         cardback.set_pos(x, y)
@@ -104,8 +109,10 @@ class Deck:
         delay_animation(card, 0.6, drawable)
         move_and_scale_animation(card, hand_pos, CARD_SIZE_HAND, 0.3, drawable)
 
-    @staticmethod
-    def on_click(gs, mouse_pos, drawable):
+        hand = next(o for o in drawable if isinstance(o, PlayerHand))
+        hand.add_card(card)
+
+    def on_click(self, gs, drawable):
         cards = gs.top_deck()
         n = len(gs.human_player().hand)
         (x, y) = HAND_POSITION
@@ -114,13 +121,13 @@ class Deck:
         gs.human_player().hand += cards
 
 
-class CardSlot(GameObject):
+class CardSlot(Updatable):
     def __init__(self, card=None, pos=None, main=False):
         self.main = main
         if main:
-            GameObject.__init__(self, MAIN_SLOT_IMAGE.copy())
+            Updatable.__init__(self, MAIN_SLOT_IMAGE.copy())
         else:
-            GameObject.__init__(self, SLOT_IMAGE.copy())
+            Updatable.__init__(self, SLOT_IMAGE.copy())
         if pos: self.set_pos(pos[0], pos[1])
         self.card = card
         if card:
@@ -133,14 +140,12 @@ class CardSlot(GameObject):
             self.card.set_pos(x + 4, y + 4)
         self.draw_priority = 80
 
-    def update(self, mouse_pos):
-        if self.rect.collidepoint(mouse_pos):
-            #print(mouse_pos)
-            if self.card:
-                self.card.update(mouse_pos)
+    def on_mouse_over(self):
+        if self.card:
+            self.card.on_mouse_over()
 
 
-class PlayerFrame(GameObject):
+class PlayerFrame(Drawable):
     def __init__(self, player, killed=False):
         GameObject.__init__(self)
         self.player = player
@@ -277,6 +282,10 @@ class AIPlayerFrame(PlayerFrame):
 class HumanPlayerFrame(PlayerFrame):
     def __init__(self, player, killed=False):
         PlayerFrame.__init__(self, player, killed=killed)
+        self.source_img = transparent_surface(HUMAN_PLAYER_FRAME_SIZE)
+        self.reset_img()
+        (x, y) = HUMAN_PLAYER_FRAME_POS
+        self.set_pos(x, y)
 
     @staticmethod
     def slot_pos(number):
@@ -297,6 +306,25 @@ class HumanPlayerFrame(PlayerFrame):
             slot_obj = CardSlot(pos=self.slot_pos(i), main=True)
             self.slots.append(slot_obj)
 
-    def global_money_icon_pos(self):
-        return 1000, 600
+    def portrait_pos(self):
+        slot_w = MAIN_SLOT_IMAGE.get_rect().w
+        x = round(slot_w * 1.06 * 8) + 13
+        y = self.rect.h // 2 - PLAYER_PORTRAIT_FRAME_IMAGE.get_rect().h // 2 - 5
+        return x, y
+
+    @staticmethod
+    def score_pos(value_rect):
+        slot_w = MAIN_SLOT_IMAGE.get_rect().w
+        x = round(slot_w * 1.06 * 8)
+        x += (PLAYER_PORTRAIT_FRAME_IMAGE.get_rect().w // 2 - value_rect.w) // 2
+        y = 12
+        return x, y
+
+    @staticmethod
+    def money_icon_pos():
+        slot_w = MAIN_SLOT_IMAGE.get_rect().w
+        x = round(slot_w * 1.06 * 8) + 15
+        y = PLAYER_FRAME_IMAGE.get_rect().h - MONEY_ICON.get_rect().h - 12
+        return x, y
+
 

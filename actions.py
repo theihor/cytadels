@@ -13,7 +13,7 @@ def action_rob(gs, drawable):
     robber_frame = next(f for f in frames if f.player.role == robber.role)
     (x1, y1) = robbed_frame.global_money_icon_pos()
     (x2, y2) = robber_frame.global_money_icon_pos()
-    obj = GameObject(image=MONEY_ICON)
+    obj = Drawable(image=MONEY_ICON)
     obj.set_pos(x1, y1)
 
     m = robbed.money

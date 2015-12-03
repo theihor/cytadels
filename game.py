@@ -12,8 +12,6 @@ def do_turn(gs, drawable):
         return
     if p.role == gs.robbed:
         robber = next(p for p in gs.players if p.role[0] == 'Thief')
-        #robber.money += p.money
-        #p.money = 0
         action_rob(gs, drawable)
         log(p.roled_name() + ' is robbed by ' + robber.roled_name() + '!')
     if p.role[0] == 'King':

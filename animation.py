@@ -1,6 +1,6 @@
 from refresh import *
 from globalvars import *
-from gameobject import GameObject
+from gameobject import *
 
 
 def delay_animation(obj, time, drawable=DRAWABLE):
@@ -26,13 +26,13 @@ def move_animation(obj, new_pos, time, drawable=DRAWABLE):
     print(x2, y2)
 
     for t in range(ticks):
-
         obj.set_pos(round(x), round(y))
         refresh_scene(drawable)
         (x, y) = (x + vx, y + vy)
     obj.set_pos(x2, y2)
     refresh_scene(drawable)
     obj.draw_priority = old_dp
+    drawable.remove(obj)
 
 
 def move_and_scale_animation(obj, new_pos, new_size, time, drawable=DRAWABLE):
@@ -58,6 +58,7 @@ def move_and_scale_animation(obj, new_pos, new_size, time, drawable=DRAWABLE):
     obj.set_pos(x2, y2)
     refresh_scene(drawable)
     obj.draw_priority = old_dp
+    drawable.remove(obj)
 
 
 def show_message(s, time=0.7, drawable=DRAWABLE):
@@ -65,13 +66,32 @@ def show_message(s, time=0.7, drawable=DRAWABLE):
     (w, h) = WINDOW_SIZE
     f = pygame.font.Font(GLOBAL_FONT_FILE_NAME, w // 20)
     text = f.render(s, 1, COLOR_WHITE, COLOR_BLACK)
-    obj = GameObject(image=text)
+    obj = Drawable(image=text)
     obj.set_pos((w - text.get_rect().w) // 2, (h - text.get_rect().h) // 2)
     drawable.append(obj)
     obj.draw_priority = 0
     for t in range(ticks):
         refresh_scene(drawable)
     drawable.remove(obj)
+
+
+def open_card_animation(obj, new_pos, new_size, opened_pos=SHOW_CARD_POS, time=1, drawable=DRAWABLE):
+    (x, y) = DECK_POSITION
+    (w, h) = CARD_SIZE_DECK
+    obj.scale(w, h)
+    obj.set_pos(x, y)
+    (dest_x, dest_y) = SHOW_CARD_POS
+    cardback = get_cardback()
+    cardback.scale(w, h)
+    cardback.set_pos(x, y)
+    move_and_scale_animation(cardback, (x + w // 2, y), (0, h), 0.2, drawable)
+    obj.set_rect((x + w // 2, y), (0, h))
+    move_and_scale_animation(card, (x, y), (w, h), 0.2, drawable)
+
+    move_and_scale_animation(card, (dest_x, dest_y), CARD_SIZE_DEFAULT, 0.4, drawable)
+    delay_animation(card, 0.6, drawable)
+    move_and_scale_animation(card, hand_pos, CARD_SIZE_HAND, 0.3, drawable)
+    pass
 
 
 def choice_pos(i, n):

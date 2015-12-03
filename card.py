@@ -1,37 +1,38 @@
-from globalvars import *
-from pygame.sprite import Sprite
-from pygame import Surface
-from pygame import Rect
-import pygame.transform
-import pygame.font
-import pygame.draw
-import os.path
 from gameobject import *
 from loadimg import *
 
 
-class Card(GameObject):
+class Card(Updatable):
     def __init__(self):
-        GameObject.__init__(self)
+        Updatable.__init__(self)
         self.source_img = Surface(CARD_SIZE_DEFAULT)
         self.image = self.source_img
         self.rect = self.image.get_rect()
         self.draw_priority = 20
+        self.old_rect = None
+        self.mouse_over = False
 
-    def update(self, mouse_pos=None):
-        if mouse_pos:
-            if self.rect.collidepoint(mouse_pos):
-                #print(mouse_pos)
-                self.draw_priority = 0
-                self.reset_img()
-                (x, y) = self.pos()
-                (w, h) = self.rect.size
-                if x + w > WINDOW_SIZE[0]:
-                    x = WINDOW_SIZE[0] - w
-                if y + h > WINDOW_SIZE[1]:
-                    y = WINDOW_SIZE[1] - h
-                self.set_pos(x, y)
-            #self.draw_priority = 20
+    def on_mouse_over(self):
+        if not self.mouse_over:
+            self.old_rect = self.rect.copy()
+            self.mouse_over = True
+        self.draw_priority = 0
+        self.reset_img()
+        (x, y) = self.pos()
+        (w, h) = self.rect.size
+        if x + w > WINDOW_SIZE[0]:
+            x = WINDOW_SIZE[0] - w
+        if y + h > WINDOW_SIZE[1]:
+            y = WINDOW_SIZE[1] - h
+        self.set_pos(x, y)
+
+
+    def on_mouse_out(self):
+        if self.old_rect and self.mouse_over:
+            self.draw_priority = 20
+            self.set_rect(self.old_rect.topleft, self.old_rect.size)
+            self.old_rect = None
+            self.mouse_over = False
 
 
 class NoImgCard(Card):
@@ -65,19 +66,17 @@ class NoImgCard(Card):
 
 class ImgCard(Card):
     def __init__(self, image, card_dict):
+        Card.__init__(self)
         self.name = card_dict['name']
         self.price = card_dict['price']
         self.value = card_dict['value']
         self.color = card_dict['color']
 
         self.picture = image
-        self.source_img = self.picture.copy()
-        self.image = self.source_img
-        self.rect = self.image.get_rect()
-
+        self.source_img = self.picture
         self.init_img()
-
-        self.draw_priority = 10
+        self.image = self.source_img
+        self.reset_img()
 
     def init_img(self):
         self.source_img.blit(CARD_TEMPLATE_IMAGE, (0, 0))

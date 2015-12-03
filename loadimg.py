@@ -16,12 +16,6 @@ def load_image(name, colorkey=None):
     return image
 
 
-def transparent_surface(size):
-    img = Surface(size)
-    img.fill(COLOR_TRANSPARENT)
-    img.set_colorkey(COLOR_TRANSPARENT)
-    return img
-
 # loading textures
 BACKGROUND_IMAGE = load_image("bg_table.png")
 CARD_BACK_IMAGE = load_image("card_back.png")

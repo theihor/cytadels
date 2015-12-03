@@ -4,7 +4,14 @@ from globalvars import *
 from card import *
 from math import ceil
 from pygame.sprite import *
-from loadimg import *
+from pygame import Surface
+
+
+def transparent_surface(size):
+    img = Surface(size)
+    img.fill(COLOR_TRANSPARENT)
+    img.set_colorkey(COLOR_TRANSPARENT)
+    return img
 
 
 class GameObject:
@@ -21,7 +28,6 @@ class GameObject:
         self.rect = self.image.get_rect()
         if size:
             self.scale(size[0], size[1])
-        self.draw_priority = 100
 
     def pos(self):
         return self.rect.topleft
@@ -58,11 +64,41 @@ class GameObject:
         self.image = self.source_img.copy()
         self.update_rect_size()
 
-    def draw(self, surface):
-        surface.blit(self.image, self.rect)
-
     def set_rect(self, pos, size):
         (x, y) = pos
         self.set_pos(x ,y)
         (w, h) = size
         self.scale(w, h)
+
+
+class Drawable(GameObject):
+    def __init__(self, image=None, size=None):
+        GameObject.__init__(self, image=image, size=size)
+        self.draw_priority = 100
+
+    def draw(self, surface):
+        surface.blit(self.image, self.rect)
+
+
+class Collidable(Drawable):
+    def __init__(self, image=None, size=None):
+        GameObject.__init__(self, image=image, size=size)
+        self.collide_rect = self.rect
+
+    def collides(self, pos):
+        return self.collide_rect.collidepoint(pos)
+
+
+class Updatable(Collidable):
+    def on_mouse_over(self):
+        pass
+
+    def on_mouse_out(self):
+        pass
+
+
+class Clickable(Updatable):
+    def on_click(self, gs, drawable):
+        pass
+
+
