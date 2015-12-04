@@ -16,19 +16,18 @@ Chapel,1,1,BLUE,3,,
 Church,2,2,BLUE,3,church.png,
 Monastery,3,3,BLUE,3,monastery.png,
 Cathedral,5,5,BLUE,2,cathedral.png,
-Observatory,5,5,PURPLE,1,,"When your action is drawing a card, draw 3 instead of 2, choose one and rsicard the rest."
-Ghost house,2,2,PURPLE,1,,This card is of any color when you count final score.
-Lab,5,5,PURPLE,1,,Once a turn you can discard a card to get 1 Gold.
-Fort,3,3,PURPLE,2,,Warlord can not destroy Fort.
-Dragon Gate,6,8,PURPLE,1,,
-University,6,8,PURPLE,1,,
-Cemetery,5,5,PURPLE,1,,"When Warlord destroys a building, you can spend 1 Gold to get this card to your hand."
-Magic School,6,6,PURPLE,1,,This card is of any color when you collect money.
-Library,6,6,PURPLE,1,,"When you draw cards, keep both."
-Forge,5,5,PURPLE,1,,Once a turn you can spend 2 Gold to draw 3 cards.
-Great Wall,6,6,PURPLE,1,,Warlord must spend 1 more Gold to destroy your buildings.
-Park,3,4,PURPLE,5,,
-Temple,4,4,BLUE,3,,
-Armory,4,4,RED,3,,
-Circus,2,2,YELLOW,3,,
-Collosus,7,10,PURPLE,1,,
+Observatory,5,5,PURPLE,1,observatory.png,"When your action is drawing a card, draw 3 instead of 2, choose one and rsicard the rest."
+Ghost house,2,2,PURPLE,1,ghost_house.png,This card is of any color when you count final score.
+Lab,5,5,PURPLE,1,lab.png,Once a turn you can discard a card to get 1 Gold.
+Fort,3,3,PURPLE,2,fort.png,Warlord can not destroy Fort.
+Dragon Gate,6,8,PURPLE,1,dragon_gate.png,
+University,6,8,PURPLE,1,university.png,
+Cemetery,5,5,PURPLE,1,cemetery.png,"When Warlord destroys a building, you can spend 1 Gold to get this card to your hand."
+Magic School,6,6,PURPLE,1,magic_school.png,This card is of any color when you collect money.
+Library,6,6,PURPLE,1,library.png,"When you draw cards, keep both."
+Forge,5,5,PURPLE,1,forge.png,Once a turn you can spend 2 Gold to draw 3 cards.
+Great Wall,6,6,PURPLE,1,great_wall.png,Warlord must spend 1 more Gold to destroy your buildings.
+Park,3,4,PURPLE,5,park.png,
+Temple,4,4,BLUE,3,temple.png,
+Armory,4,4,RED,3,armory.png,
+Circus,2,2,YELLOW,3,circus.png,
