@@ -21,18 +21,33 @@ BACKGROUND_IMAGE = load_image("bg_table.png")
 CARD_BACK_IMAGE = load_image("card_back.png")
 CARD_TEMPLATE_IMAGE = load_image("card_template.png")
 
-CARDS = ["tavern.png",
-         "market.png",
-         "port.png",
-         "harbor.png",
-         "castle.png",
-         "palace.png",
-         "watchtower.png",
-         "prison.png",
-         "arena.png",
-         "church.png",
-         "monastery.png",
-         "cathedral.png"]
+CARDS = [ "tavern.png",
+          "market.png",
+          "port.png",
+          "harbor.png",
+          "castle.png",
+          "palace.png",
+          "watchtower.png",
+          "prison.png",
+          "arena.png",
+          "church.png",
+          "monastery.png",
+          "cathedral.png",
+          "observatory.png",
+          "ghost_house.png",
+          "lab.png",
+          "fort.png",
+          "dragon_gate.png",
+          "university.png",
+          "cemetery.png",
+          "magic_school.png",
+          "library.png",
+          "forge.png",
+          "great_wall.png",
+          "park.png",
+          "temple.png",
+          "armory.png",
+          "circus.png" ]
 
 CARD_IMAGES = {}
 for card_image_name in CARDS:

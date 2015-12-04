@@ -340,6 +340,15 @@ class HumanPlayerFrame(PlayerFrame):
         y = self.rect.h // 2 - PLAYER_PORTRAIT_FRAME_IMAGE.get_rect().h // 2 - 5
         return x, y
 
+    def make_portrait(self):
+        f = pygame.font.Font(GLOBAL_FONT_FILE_NAME, self.rect.h // 15)
+        text = f.render(self.player.role[0], 1, COLOR_RED)
+        self.portrait = Surface(PORTRAIT_UNKNOWN_IMAGE.get_rect().size)
+        self.portrait.blit(text, (20, 20))
+        if self.killed:
+            text = f.render("KILLED", 1, COLOR_RED)
+            self.portrait.blit(text, (20, 50))
+
     @staticmethod
     def score_pos(value_rect):
         slot_w = MAIN_SLOT_IMAGE.get_rect().w

@@ -79,11 +79,18 @@ while not gs.end():
             for obj in [obj for obj in objects if isinstance(obj, Clickable)]:
                 if obj.rect.collidepoint(mp):
                     obj.on_click(gs, objects)
-        #if e.type == pygame.MOUSEBUTTONDOWN and e.button == 3:
+        if e.type == pygame.MOUSEBUTTONDOWN and e.button == 3:
+
+                if gs.current_player < len(CHARACTERS):
+                    if gs.human_turn():
+                        game.next_turn(gs, scene)
+                else:
+                    game.init_round(gs)
 
     clock.tick(GLOBAL_FPS * 0.2)
     if gs.current_player < len(CHARACTERS):
-        game.next_turn(gs, scene)
+        if not gs.human_turn():
+            game.next_turn(gs, scene)
     else:
         game.init_round(gs)
 

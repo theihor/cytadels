@@ -152,3 +152,7 @@ class GameState:
 
     def robber(self):
         return next(p for p in self.players if p.role[0] == 'Thief')
+
+    def human_turn(self):
+        p = self.player()
+        if p: return p == self.human_player()
