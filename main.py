@@ -68,7 +68,8 @@ def update_roles(scene):
         frame.adjust_portrait()
         scene['portraits'].append(frame.portrait)
 
-game.init_round(gs)
+scene = get_view(gs)
+game.init_round(gs, scene)
 
 scene = get_view(gs)
 objects = scene_objects(scene)
@@ -103,7 +104,7 @@ while not gs.end():
         if not gs.human_turn():
             game.next_turn(gs, scene)
     else:
-        game.init_round(gs)
+        game.init_round(gs, scene)
         update_roles(scene)
         #scene = get_view(gs)
         #objects = scene_objects(scene)

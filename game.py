@@ -55,7 +55,7 @@ def choose_role(gs):
     gs.roles.remove(p.role)
 
 
-def init_round(gs):
+def init_round(gs, scene):
     gs.round += 1
     gs.new_round()
     log('Round ' + str(gs.round))
@@ -64,6 +64,8 @@ def init_round(gs):
         p = gs.player()
         log(p.name + ' is choosing a character from')
         log(str([role[0] for role in gs.roles]))
+        if p == gs.human_player():
+            action_player_chooses_role([role[0] for role in gs.roles], gs, scene)
         choose_role(gs)
         log(p.name + ' have choosed a ' + p.role[0])
         p.revealed = False

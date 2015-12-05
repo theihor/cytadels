@@ -114,7 +114,10 @@ class CharacterCard(Card):
         self.mouse_over = False
         self.revealed = False
 
-        self.source_img = CHARACTER_IMAGES[name]
+        if name in CHARACTER_IMAGES:
+            self.source_img = CHARACTER_IMAGES[name]
+        else:
+            self.source_img = GameObject()
         self.init_img()
 
     def init_img(self):

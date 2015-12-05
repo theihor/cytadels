@@ -17,3 +17,4 @@ def refresh_scene(objects):
 
     pygame.display.flip()
     pass
+

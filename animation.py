@@ -120,10 +120,72 @@ def open_card_animation(obj, new_pos, new_size, opened_pos=SHOW_CARD_POS, t=1, d
     pass
 
 
-def choice_pos(i, n):
-    if n <= 3:
-        return i
+def move_group_animation(objs_and_poss, time=0.5, drawable=DRAWABLE):
+    obj_pos_vs = []
+    old_dps = []
+    for (obj, new_pos) in objs_and_poss:
+        old_dps.append(obj.draw_priority)
+        obj.draw_priority = 0
+        ticks = round(time * GLOBAL_FPS)
+        (x1, y1) = obj.pos()
+        (x2, y2) = new_pos
+        (vx, vy) = ((x2 - x1) / ticks, (y2 - y1) / ticks)
+        drawable.append(obj)
+        (x, y) = (x1, y1)
+        obj_pos_vs.append((obj, (x, y), (vx, vy)))
 
-def choosing(choosable, drawable):
-    n = len(choosable)
+    for t in range(ticks):
+
+        for i in range(len(obj_pos_vs)):
+            (obj, (x, y), (vx, vy)) = obj_pos_vs[i]
+            obj.set_pos(round(x), round(y))
+            #print(t)
+
+            obj_pos_vs[i] = (obj, (x + vx, y + vy), (vx, vy))
+        refresh_scene(drawable)
+
+    for i in range(len(objs_and_poss)):
+        (obj, (x2, y2)) = objs_and_poss[i]
+        obj.set_pos(x2, y2)
+        refresh_scene(drawable)
+        obj.draw_priority = old_dps[i]
+        #drawable.remove(obj)
+
+
+def choice_pos(i, n):
+    print(i, n)
+    (w, h) = CARD_SIZE_CHOICE
+    (l, m) = WINDOW_SIZE
+    if n <= 4:
+        b = (l - n * w) // (n + 3)
+        a = 2 * b
+        x = a + (w + b) * i
+        y = (m - h) // 2
+        return x, y
+    else:
+        n2 = n // 2
+        n1 = n - n2
+        b = h // 8
+        a = (m - h * 2 - b) // 2
+        if i < n1:
+            (x, y) = choice_pos(i, n1)
+            y = a
+            return x, y
+        else:
+            (x, y) = choice_pos(i - n1, n2)
+            y = a + h + b
+            return x, y
+
+
+def choosing_start_animation(objs, drawable):
+    n = len(objs)
+    objs_and_poss = []
+    for i in range(len(objs)):
+        objs_and_poss.append((objs[i], choice_pos(i, n)))
+    move_group_animation(objs_and_poss, drawable=drawable)
+    clock.tick(0.5)
+
+
+
+
 

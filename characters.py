@@ -74,3 +74,8 @@ CHARACTERS = [
   ('Merchant', merchant),
   ('Architect', architect),
   ('Warlord', warlord)]
+
+CHARACTERS_N = { }
+
+for i in range(len(CHARACTERS)):
+    CHARACTERS_N[CHARACTERS[i][0]] = i

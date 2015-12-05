@@ -2,7 +2,7 @@ from definitions import *
 from animation import *
 from globalvars import *
 from view import *
-
+import pygame
 
 def action_rob(gs, scene):
     objects = []
@@ -69,6 +69,25 @@ def action_reveal(scene, p):
     objects.remove(card)
 
     open_card_animation(card, card.pos(), card.size(), drawable=objects)
+
+
+def action_player_chooses_role(role_names, gs, scene):
+    role_names.sort(key=lambda x: CHARACTERS_N[x])
+
+    objects = [Drawable(image=window.copy())]
+    darking = Drawable(image=Surface(WINDOW_SIZE))
+    darking.source_img.set_alpha(200)
+    darking.draw_priority = 0
+    objects.append(darking)
+
+    cards = []
+    for name in role_names:
+        card = Drawable(image=CHARACTER_IMAGES[name], size=CARD_SIZE_CHOICE)
+        card.set_pos(600, 400)
+        card.draw_priority = -1
+        cards.append(card)
+
+    choosing_start_animation(cards, objects)
 
 
 
