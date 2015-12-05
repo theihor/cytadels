@@ -41,6 +41,7 @@ def get_view(gs):
     p = gs.human_player()
     frame = HumanPlayerFrame(p, p.role == gs.killed)
     scene['frames'].append(frame)
+    scene['portraits'].append(frame.portrait)
     scene['human_player_frame_slots'] = []
     scene['human_player_frame_slot_cards'] = []
     for slot in frame.slots:
@@ -57,6 +58,15 @@ def get_view(gs):
 
     return scene
 
+
+def update_roles(scene):
+    scene['portraits'] = []
+    frames = scene['frames']
+    for frame in frames:
+        name = frame.player.role[0]
+        frame.portrait = CharacterCard(name, frame)
+        frame.adjust_portrait()
+        scene['portraits'].append(frame.portrait)
 
 game.init_round(gs)
 
@@ -82,7 +92,6 @@ while not gs.end():
                 if obj.rect.collidepoint(mp):
                     obj.on_click(gs, objects)
         if e.type == pygame.MOUSEBUTTONDOWN and e.button == 3:
-
                 if gs.current_player < len(CHARACTERS):
                     if gs.human_turn():
                         game.next_turn(gs, scene)
@@ -95,7 +104,8 @@ while not gs.end():
             game.next_turn(gs, scene)
     else:
         game.init_round(gs)
-        scene = get_view(gs)
-        objects = scene_objects(scene)
+        update_roles(scene)
+        #scene = get_view(gs)
+        #objects = scene_objects(scene)
 
 

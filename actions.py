@@ -62,11 +62,13 @@ def action_reveal(scene, p):
     objects = scene_objects(scene)
     frame = next(f for f in scene['frames'] if f.player == p)
     p.revealed = True
-    frame.portrait.init_img()
-    frame.adjust_portrait()
-    #frame.adjust_portrait()
-    #card = frame.portrait
-    #card.revealed = True
-    #open_card_animation(card, card.pos(), card.size(), drawable=objects, t=2)
 
-    #refresh_scene(objects)
+    card = frame.portrait
+    card.init_img()
+    frame.adjust_portrait()
+    objects.remove(card)
+
+    open_card_animation(card, card.pos(), card.size(), drawable=objects)
+
+
+

@@ -246,6 +246,7 @@ class PlayerFrame(Drawable):
         x += pos[0]
         y += pos[1]
         self.portrait.set_pos(x, y)
+
         self.portrait.collide_rect = self.portrait.rect.copy()
 
     def put_card_in_slots(self, card, scene):
