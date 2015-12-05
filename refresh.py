@@ -4,6 +4,7 @@ import pygame
 
 clock = pygame.time.Clock()
 window = pygame.display.set_mode(WINDOW_SIZE)
+pygame.font.init()
 
 
 def refresh_scene(objects):

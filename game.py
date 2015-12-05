@@ -22,7 +22,7 @@ def do_turn(gs, scene):
         log(p.roled_name() + ' is robbed by ' + robber.roled_name() + '!')
     if p.role[0] == 'King':
         log(p.roled_name() + ' gets the crown!')
-        gs.crown_owner = p.id
+        gs.crown_owner = gs.players.index(p)
         
     if random.random() <= 0.99:
         play_role = random.randint(0, 2)
@@ -60,6 +60,7 @@ def init_round(gs, scene):
     gs.new_round()
     log('Round ' + str(gs.round))
     gs.current_player = 0
+    gs.choosing_stage = True
     while gs.current_player < COUNT_OF_PLAYERS:
         p = gs.player()
         log(p.name + ' is choosing a character from')

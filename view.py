@@ -368,3 +368,11 @@ class HumanPlayerFrame(PlayerFrame):
         return x, y
 
 
+class RoleChoiceCard(Clickable):
+    def __init__(self, image=None, size=None):
+        Clickable.__init__(self, image=image, size=size)
+        (x, y) = CHOICE_DECK_POSITION
+        self.set_pos(x, y)
+        self.draw_priority = -1
+
+

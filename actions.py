@@ -82,9 +82,7 @@ def action_player_chooses_role(role_names, gs, scene):
 
     cards = []
     for name in role_names:
-        card = Drawable(image=CHARACTER_IMAGES[name], size=CARD_SIZE_CHOICE)
-        card.set_pos(600, 400)
-        card.draw_priority = -1
+        card = RoleChoiceCard(image=CHARACTER_IMAGES[name], size=CARD_SIZE_CHOICE)
         cards.append(card)
 
     choosing_start_animation(cards, objects)
