@@ -191,9 +191,7 @@ def action_role_choosing(gs, scene):
         objects = scene_objects(scene)
         deck = choosing_deck_drawable(len(gs.roles))
         objects.append(deck)
-        #refresh_scene(objects)
 
-    #deck = choosing_deck_drawable(len(gs.roles) - 1)
     move_with_a_animation(deck, (-deck.size()[0], deck.pos()[1]), 0.5, drawable=objects)
 
 

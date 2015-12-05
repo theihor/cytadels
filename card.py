@@ -122,7 +122,7 @@ class CharacterCard(Card):
                 self.source_img = CHARACTER_IMAGES[self.name]
                 self.reset_img()
             else:
-                self.source_img = CARD_BACK_IMAGE
+                self.source_img = CHARACTER_CARD_BACK_IMAGE
                 self.reset_img()
         else:
             self.source_img = transparent_surface((1, 1))
