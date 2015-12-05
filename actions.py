@@ -96,7 +96,9 @@ def wait_click(gs, objects):
 def action_player_chooses_role(role_names, gs, scene):
     p = gs.player()
     role_names.sort(key=lambda x: CHARACTERS_N[x])
-
+    objects = scene_objects(scene)
+    refresh_scene(objects)
+    
     objects = [Drawable(image=window.copy())]
     darking = Drawable(image=Surface(WINDOW_SIZE))
     darking.source_img.set_alpha(200)
@@ -162,6 +164,9 @@ def choosing_deck_drawable(n):
 
 
 def action_role_choosing(gs, scene):
+    objects = scene_objects(scene)
+    end_round_animation(scene['portraits'], objects)
+
     scene['portraits'] = []
     objects = scene_objects(scene)
     deck = choosing_deck_drawable(len(gs.roles))

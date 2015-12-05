@@ -100,9 +100,6 @@ while not gs.end():
         if not gs.human_turn():
             game.next_turn(gs, scene)
     else:
-        scene['portraits'] = []
-        objects = scene_objects(scene)
-        refresh_scene(objects)
         game.init_round(gs, scene)
         update_roles(scene)
         #scene = get_view(gs)

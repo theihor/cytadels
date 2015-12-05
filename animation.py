@@ -123,10 +123,10 @@ def open_card_animation(obj, new_pos, new_size, opened_pos=SHOW_CARD_POS, t=1, d
 def move_group_animation(objs_and_poss, time=0.5, drawable=DRAWABLE):
     obj_pos_vs = []
     old_dps = []
+    ticks = round(time * GLOBAL_FPS)
     for (obj, new_pos) in objs_and_poss:
         old_dps.append(obj.draw_priority)
         obj.draw_priority = 0
-        ticks = round(time * GLOBAL_FPS)
         (x1, y1) = obj.pos()
         (x2, y2) = new_pos
         (vx, vy) = ((x2 - x1) / ticks, (y2 - y1) / ticks)
@@ -150,6 +150,45 @@ def move_group_animation(objs_and_poss, time=0.5, drawable=DRAWABLE):
         refresh_scene(drawable)
         obj.draw_priority = old_dps[i]
         #drawable.remove(obj)
+
+
+# ops === (object, position, size)
+def move_and_scale_group_animation(opss, time=0.5, drawable=DRAWABLE):
+    obj_pos_vs_size_ds = []
+    old_dps = []
+    ticks = round(time * GLOBAL_FPS)
+    for (obj, new_pos, new_size) in opss:
+        old_dps.append(obj.draw_priority)
+        obj.draw_priority = 0
+        (x1, y1) = obj.pos()
+        (x2, y2) = new_pos
+        (vx, vy) = ((x2 - x1) / ticks, (y2 - y1) / ticks)
+
+        (w1, h1) = obj.rect.size
+        (w2, h2) = new_size
+        (dw, dh) = ((w2 - w1) / ticks, (h2 - h1) / ticks)
+
+        drawable.append(obj)
+        (x, y) = (x1, y1)
+        (w, h) = (w1, h1)
+        obj_pos_vs_size_ds.append((obj, (x, y), (vx, vy), (w, h), (dw, dh)))
+
+    for t in range(ticks):
+
+        for i in range(len(obj_pos_vs_size_ds)):
+            (obj, (x, y), (vx, vy), (w, h), (dw, dh)) = obj_pos_vs_size_ds[i]
+            obj.set_pos(round(x), round(y))
+            obj.scale(round(w), round(h))
+
+            obj_pos_vs_size_ds[i] = (obj, (x + vx, y + vy), (vx, vy), (w + dw, h + dh), (dw, dh))
+        refresh_scene(drawable)
+
+    for i in range(len(obj_pos_vs_size_ds)):
+        (obj, (x2, y2), (w2, h2)) = opss[i]
+        obj.set_pos(x2, y2)
+        obj.scale(w2, h2)
+        refresh_scene(drawable)
+        obj.draw_priority = old_dps[i]
 
 
 def choice_pos(i, n):
@@ -186,6 +225,10 @@ def choosing_start_animation(objs, drawable):
     #clock.tick(0.5)
 
 
-
+def end_round_animation(objs, drawable):
+    opss = []
+    for obj in objs:
+        opss.append((obj, CHOICE_DECK_POSITION, CARD_SIZE_CHOICE))
+    move_and_scale_group_animation(opss, drawable=drawable)
 
 
