@@ -114,16 +114,19 @@ class CharacterCard(Card):
         self.mouse_over = False
         self.revealed = False
 
-        if name in CHARACTER_IMAGES:
-            self.source_img = CHARACTER_IMAGES[name]
-        else:
-            self.source_img = GameObject()
         self.init_img()
 
     def init_img(self):
-        if self.frame.player.revealed:
-            self.source_img = CHARACTER_IMAGES[self.name]
-            self.reset_img()
+        if self.name in CHARACTER_IMAGES:
+            if self.frame.player.revealed:
+                self.source_img = CHARACTER_IMAGES[self.name]
+                self.reset_img()
+            else:
+                self.source_img = CARD_BACK_IMAGE
+                self.reset_img()
         else:
-            self.source_img = CARD_BACK_IMAGE
-            self.reset_img()
+            self.source_img = transparent_surface((1, 1))
+
+    def on_mouse_over(self):
+        if self.name in CHARACTER_IMAGES and self.frame.player.revealed:
+            Card.on_mouse_over(self)

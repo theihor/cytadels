@@ -7,12 +7,11 @@ from game_init import init_game
 from view import *
 from refresh import refresh_scene
 import game
-import log
-import animation
+from actions import *
 from characters import CHARACTERS
 
 pygame.init()
-log.init_log()
+init_log()
 # create window
 pygame.display.set_caption('Citadels')
 gs = init_game()
@@ -59,22 +58,17 @@ def get_view(gs):
     return scene
 
 
-def update_roles(scene):
-    scene['portraits'] = []
-    frames = scene['frames']
-    for frame in frames:
-        name = frame.player.role[0]
-        frame.portrait = CharacterCard(name, frame)
-        frame.adjust_portrait()
-        scene['portraits'].append(frame.portrait)
+
+
+#scene = get_view(gs)
+#objects = scene_objects(scene)
 
 scene = get_view(gs)
 objects = scene_objects(scene)
 refresh_scene(objects)
 game.init_round(gs, scene)
+update_roles(scene)
 
-scene = get_view(gs)
-objects = scene_objects(scene)
 while not gs.end():
     objects = scene_objects(scene)
     for obj in [obj for obj in objects if isinstance(obj, Updatable)]:
@@ -106,6 +100,9 @@ while not gs.end():
         if not gs.human_turn():
             game.next_turn(gs, scene)
     else:
+        scene['portraits'] = []
+        objects = scene_objects(scene)
+        refresh_scene(objects)
         game.init_round(gs, scene)
         update_roles(scene)
         #scene = get_view(gs)

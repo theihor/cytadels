@@ -49,28 +49,13 @@ def do_turn(gs, scene):
 pass
 
 
-def choose_role(gs):
-    p = gs.player()
-    p.role = random.choice(gs.roles)
-    gs.roles.remove(p.role)
-
-
 def init_round(gs, scene):
     gs.round += 1
     gs.new_round()
     log('Round ' + str(gs.round))
     gs.current_player = 0
     gs.choosing_stage = True
-    while gs.current_player < COUNT_OF_PLAYERS:
-        p = gs.player()
-        log(p.name + ' is choosing a character from')
-        log(str([role[0] for role in gs.roles]))
-        if p == gs.human_player():
-            action_player_chooses_role([role[0] for role in gs.roles], gs, scene)
-        choose_role(gs)
-        log(p.name + ' have choosed a ' + p.role[0])
-        p.revealed = False
-        gs.inc_player()
+    action_role_choosing(gs, scene)
     gs.choosing_stage = False
     gs.current_player = 0
 

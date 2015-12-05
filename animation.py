@@ -183,7 +183,7 @@ def choosing_start_animation(objs, drawable):
     for i in range(len(objs)):
         objs_and_poss.append((objs[i], choice_pos(i, n)))
     move_group_animation(objs_and_poss, drawable=drawable)
-    clock.tick(0.5)
+    #clock.tick(0.5)
 
 
 

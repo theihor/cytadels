@@ -84,6 +84,8 @@ class GameState:
         self.the_deck = deck
 
     def new_round(self):
+        for p in self.players:
+            p.role = ('Noone', noone)
         self.killed = ('Noone', noone)
         self.robbed = ('Noone', noone)
         self.roles = CHARACTERS[:]

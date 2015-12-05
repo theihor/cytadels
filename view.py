@@ -75,7 +75,7 @@ class Deck(Clickable):
             x += (2 * self.n - 1) * stepx
         if stepy > 0:
             y += (2 * self.n - 1) * stepy
-        whitecard = load_image("card_template.png")
+        whitecard = CARD_TEMPLATE_IMAGE
         whitecard = pygame.transform.smoothscale(whitecard, CARD_SIZE_DECK)
         for i in range(self.n * 2):
             if i % 2 == 0 or i == 0 or i == self.n * 2 - 1:
@@ -249,6 +249,13 @@ class PlayerFrame(Drawable):
 
         self.portrait.collide_rect = self.portrait.rect.copy()
 
+    def global_portrait_pos(self):
+        (x, y) = self.portrait_pos()
+        pos = self.pos()
+        x += pos[0]
+        y += pos[1]
+        return x, y
+
     def put_card_in_slots(self, card, scene):
         slot = next(s for s in self.slots if not s.card)
         slot.set_card(card)
@@ -294,6 +301,7 @@ class AIPlayerFrame(PlayerFrame):
         self.init_slots()
 
         self.portrait = CharacterCard(self.player.role[0], self)
+
         self.adjust_portrait()
 
     @staticmethod
@@ -343,15 +351,6 @@ class HumanPlayerFrame(PlayerFrame):
         y = self.rect.h // 2 - PLAYER_PORTRAIT_FRAME_IMAGE.get_rect().h // 2 - 5
         return x, y
 
-    def make_portrait(self):
-        f = pygame.font.Font(GLOBAL_FONT_FILE_NAME, self.rect.h // 15)
-        text = f.render(self.player.role[0], 1, COLOR_RED)
-        self.portrait = Surface(PORTRAIT_UNKNOWN_IMAGE.get_rect().size)
-        self.portrait.blit(text, (20, 20))
-        if self.killed:
-            text = f.render("KILLED", 1, COLOR_RED)
-            self.portrait.blit(text, (20, 50))
-
     @staticmethod
     def score_pos(value_rect):
         slot_w = MAIN_SLOT_IMAGE.get_rect().w
@@ -369,10 +368,32 @@ class HumanPlayerFrame(PlayerFrame):
 
 
 class RoleChoiceCard(Clickable):
-    def __init__(self, image=None, size=None):
+    def __init__(self, name, image=None, size=None):
         Clickable.__init__(self, image=image, size=size)
         (x, y) = CHOICE_DECK_POSITION
         self.set_pos(x, y)
         self.draw_priority = -1
+        self.mouse_over = False
+        self.name = name
+
+    def on_mouse_over(self):
+        if not self.mouse_over:
+            self.mouse_over = True
+
+            (x, y) = self.pos()
+            (w, h) = self.rect.size
+
+            img = Surface((w + 10, h + 10))
+            img.fill(COLOR_GREEN)
+            img.blit(self.image, (5, 5))
+            self.image = img
+
+            self.set_pos(x - 5, y - 5)
+
+    def on_mouse_out(self):
+        if self.mouse_over:
+            (x, y) = self.pos()
+            self.set_rect((x + 5, y + 5), CARD_SIZE_CHOICE)
+            self.mouse_over = False
 
 

@@ -22,6 +22,7 @@ def load_image(name, colorkey=None):
 BACKGROUND_IMAGE = load_image("bg_table.png")
 CARD_BACK_IMAGE = load_image("card_back.png")
 CARD_TEMPLATE_IMAGE = load_image("card_template.png")
+CHARACTER_CARD_BACK_IMAGE = CARD_BACK_IMAGE.copy()
 
 CARDS = [ "tavern.png",
           "market.png",
