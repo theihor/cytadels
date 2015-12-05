@@ -103,9 +103,46 @@ class ImgCard(Card):
         self.reset_img()
 
 
-class CharacterCard(GameObject):
-    def __init__(self, name):
-        GameObject.__init__(self)
-        self.source_img = Surface(CARD_SIZE_DEFAULT)
-        self.reset_img()
-        self.draw_priority = 20
+class CharacterCard(Card):
+    def __init__(self, name, frame):
+        Updatable.__init__(self)
+        self.name = name
+        self.frame = frame
+
+        self.draw_priority = 25
+        self.old_rect = None
+        self.mouse_over = False
+        self.revealed = False
+
+        self.source_img = CHARACTER_IMAGES[name]
+        self.init_img()
+
+    def init_img(self):
+        if self.frame.player.revealed:
+            self.source_img = CHARACTER_IMAGES[self.name]
+            self.reset_img()
+            self.source_img.blit(CARD_TEMPLATE_IMAGE, (0, 0))
+
+            f = pygame.font.Font(GLOBAL_FONT_FILE_NAME, self.rect.h // 12)
+            text = f.render(self.name, 1, COLOR_BLACK)
+            r = text.get_rect()
+            x = self.rect.w // 2 - r.w // 2
+            y = self.rect.h * 8 // 10 + 4
+            self.source_img.blit(text, (x, y))
+
+            gem = GEM_IMAGES[CHARACTER_GEMS[self.name]]
+            x = self.rect.w - gem.get_rect().w - 5
+            y = 5
+            self.source_img.blit(gem, (x, y))
+
+            text = f.render(str([c[0] for c in CHARACTERS].index(self.name) + 1), 1, COLOR_BLACK)
+            r_gem = Rect((x, y), gem.get_rect().size)
+            r = text.get_rect()
+            x = r_gem.x + (r_gem.w - r.w) // 2
+            y = r_gem.y + (r_gem.h - r.h) // 2
+            self.source_img.blit(text, (x, y))
+
+            self.reset_img()
+        else:
+            self.source_img = CARD_BACK_IMAGE
+            self.reset_img()

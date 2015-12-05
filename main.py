@@ -27,6 +27,7 @@ def get_view(gs):
     scene['frames'] = []
     scene['slots'] = []
     scene['slot_cards'] = []
+    scene['portraits'] = []
     for i in range(COUNT_OF_PLAYERS - 1):
         p = gs.players[i+1]
         frame = AIPlayerFrame(p, i, p.role == gs.killed)
@@ -35,6 +36,7 @@ def get_view(gs):
             scene['slots'].append(slot)
             if slot.card:
                 scene['slot_cards'].append(slot.card)
+        scene['portraits'].append(frame.portrait)
 
     p = gs.human_player()
     frame = HumanPlayerFrame(p, p.role == gs.killed)
@@ -93,4 +95,7 @@ while not gs.end():
             game.next_turn(gs, scene)
     else:
         game.init_round(gs)
+        scene = get_view(gs)
+        objects = scene_objects(scene)
+
 

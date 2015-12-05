@@ -1,6 +1,5 @@
 import sys
 from globalvars import COLOR_NAME
-from animation import show_message
 
 LOG_FILE_NAME = 'game.log'
 LOG_FILE = None

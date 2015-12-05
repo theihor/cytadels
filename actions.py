@@ -1,7 +1,6 @@
 from definitions import *
 from animation import *
 from globalvars import *
-from loadimg import *
 from view import *
 
 
@@ -57,3 +56,17 @@ def action_build(scene, p, card_dict):
     frame.put_card_in_slots(card, scene)
 
     log(p.roled_name() + ' builds ' + str_card(card_dict) + ' and now has ' + str(p.base_score()) + ' Score')
+
+
+def action_reveal(scene, p):
+    objects = scene_objects(scene)
+    frame = next(f for f in scene['frames'] if f.player == p)
+    p.revealed = True
+    frame.portrait.init_img()
+    frame.adjust_portrait()
+    #frame.adjust_portrait()
+    #card = frame.portrait
+    #card.revealed = True
+    #open_card_animation(card, card.pos(), card.size(), drawable=objects, t=2)
+
+    #refresh_scene(objects)

@@ -9,7 +9,6 @@ from gameobject import *
 from animation import *
 
 
-
 def card_from_dict(d):
     if d['image']:
         card = ImgCard(CARD_IMAGES[d['image']], d)
@@ -167,9 +166,8 @@ class PlayerFrame(Drawable):
         self.player = player
         self.slots = []
         self.draw_priority = 90
-        self.portrait = PORTRAIT_UNKNOWN_IMAGE
         self.killed = killed
-        self.make_portrait()
+
         self.init_slots()
 
     def slot_pos(self, number):
@@ -195,7 +193,7 @@ class PlayerFrame(Drawable):
     def portrait_pos(self):
         slot_w = SLOT_IMAGE.get_rect().w
         x = round(slot_w * 1.06 * 4) + 13
-        y = self.rect.h // 2 - PLAYER_PORTRAIT_FRAME_IMAGE.get_rect().h // 2 - 5
+        y = self.rect.h // 2 - self.portrait.rect.h // 2
         return x, y
 
     @staticmethod
@@ -240,17 +238,15 @@ class PlayerFrame(Drawable):
         y += (CARDS_ICON.get_rect().h - value_rect.h) // 2
         return x, y
 
-    def make_portrait(self):
-        if self.player.revealed:
-            f = pygame.font.Font(GLOBAL_FONT_FILE_NAME, self.rect.h // 15)
-            text = f.render(self.player.role[0], 1, COLOR_RED)
-            self.portrait = Surface(PORTRAIT_UNKNOWN_IMAGE.get_rect().size)
-            self.portrait.blit(text, (20, 20))
-            if self.killed:
-                text = f.render("KILLED", 1, COLOR_RED)
-                self.portrait.blit(text, (20, 50))
-        else:
-            self.portrait = PORTRAIT_UNKNOWN_IMAGE
+    def adjust_portrait(self):
+        (w, h) = PORTRAIT_SIZE
+        self.portrait.scale(w, h)
+        (x, y) = self.portrait_pos()
+        pos = self.pos()
+        x += pos[0]
+        y += pos[1]
+        self.portrait.set_pos(x, y)
+        self.portrait.collide_rect = self.portrait.rect.copy()
 
     def put_card_in_slots(self, card, scene):
         slot = next(s for s in self.slots if not s.card)
@@ -263,10 +259,10 @@ class PlayerFrame(Drawable):
     def draw(self, surface):
         self.reset_img()
 
-        self.make_portrait()
-        pos = self.portrait_pos()
-        self.image.blit(PLAYER_PORTRAIT_FRAME_IMAGE, pos)
-        self.image.blit(self.portrait, pos)
+        #self.adjust_portrait()
+        #pos = self.portrait_pos()
+        #self.image.blit(PLAYER_PORTRAIT_FRAME_IMAGE, pos)
+        #self.image.blit(self.portrait, pos)
 
         f = pygame.font.Font(GLOBAL_FONT_FILE_NAME, self.rect.h // 10)
         text = f.render(str(self.player.base_score()), 1, COLOR_BLACK)
@@ -289,12 +285,15 @@ class AIPlayerFrame(PlayerFrame):
         self.player = player
         self.slots = []
         self.draw_priority = 90
-        self.portrait = PORTRAIT_UNKNOWN_IMAGE
         self.killed = killed
-        self.make_portrait()
+
         (x, y) = self.frame_pos(number)
         self.set_pos(x, y)
+
         self.init_slots()
+
+        self.portrait = CharacterCard(self.player.role[0], self)
+        self.adjust_portrait()
 
     @staticmethod
     def frame_pos(number):
@@ -314,6 +313,9 @@ class HumanPlayerFrame(PlayerFrame):
         self.reset_img()
         (x, y) = HUMAN_PLAYER_FRAME_POS
         self.set_pos(x, y)
+
+        self.portrait = CharacterCard(self.player.role[0], self)
+        self.adjust_portrait()
 
     @staticmethod
     def slot_pos(number):

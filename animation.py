@@ -1,8 +1,8 @@
-from refresh import *
-from globalvars import *
 from gameobject import *
 from math import hypot
 from loadimg import *
+from refresh import *
+
 
 def get_cardback():
     return Drawable(CARD_BACK_IMAGE)

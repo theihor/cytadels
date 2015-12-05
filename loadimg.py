@@ -1,8 +1,10 @@
 import pygame
 from pygame import Surface
 from globalvars import *
-import os
 from refresh import *
+from characters import CHARACTERS
+import os
+
 
 
 def load_image(name, colorkey=None):
@@ -47,11 +49,28 @@ CARDS = [ "tavern.png",
           "park.png",
           "temple.png",
           "armory.png",
-          "circus.png" ]
+          "circus.png"
+          ]
 
 CARD_IMAGES = {}
 for card_image_name in CARDS:
     CARD_IMAGES[card_image_name] = load_image(os.path.join('cards', card_image_name))
+
+CHARACTER_PNGS = [ "assassin.png", "thief.png", "magician.png", "king.png",
+                   "priest.png", "merchant.png", "architect.png", "warlord.png" ]
+
+CHARACTER_IMAGES = {}
+for i in range(len(CHARACTERS)):
+    CHARACTER_IMAGES[CHARACTERS[i][0]] = load_image(os.path.join('characters', CHARACTER_PNGS[i]))
+
+CHARACTER_GEMS = { 'Assassin': 0,
+                   'Thief': 0,
+                   'Wizard': 0,
+                   'King': 1,
+                   'Bishop': 2,
+                   'Merchant': 3,
+                   'Architect': 0,
+                   'Warlord': 4 }
 
 #FONT = pygame.font.Font(GLOBAL_FONT_FILE_NAME)
 COIN_MONEY_IMAGE = load_image("coin_yellow.png")
@@ -62,7 +81,8 @@ GEM_IMAGES = { 0: "grey.png",
                2: "blue.png",
                3: "green.png",
                4: "red.png",
-               5: "violet.png"}
+               5: "violet.png" }
+
 for k in GEM_IMAGES:
     name = GEM_IMAGES[k]
     GEM_IMAGES[k] = load_image(name)

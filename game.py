@@ -12,7 +12,7 @@ def p_build(scene, p):
 
 def do_turn(gs, scene):
     p = gs.player()
-    p.revealed = True
+    action_reveal(scene, p)
     if p.role == gs.killed: 
         log(p.roled_name() + ' is killed and skips his turn!')
         return
