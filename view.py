@@ -170,7 +170,7 @@ class PlayerFrame(Drawable):
 
     def score_icon_pos(self):
         x = self.slots_end_x() + 15
-        y = 15
+        y = 20
         return x, y
 
     def score_pos(self, value_rect):
@@ -181,7 +181,7 @@ class PlayerFrame(Drawable):
 
     def money_icon_pos(self):
         (x, y) = self.score_icon_pos()
-        x += PORTRAIT_SIZE[0] // 2 + 10
+        x += PORTRAIT_SIZE[0] // 2 + 17
         return x, y
 
     def global_money_icon_pos(self):
@@ -318,18 +318,19 @@ class HumanPlayerFrame(PlayerFrame):
         y = self.rect.h - PLAYER_PORTRAIT_SIZE[1] - 15
         return x, y
 
-    def score_pos(self, value_rect):
+    def slots_end_x(self):
         slot_w = MAIN_SLOT_IMAGE.get_rect().w
         x = round(slot_w * 1.06 * 8)
-        x = (self.portrait_pos()[0] + x) // 2 - value_rect.w // 2
-        y = 10
+        return x
+
+    def score_icon_pos(self):
+        x = self.slots_end_x() + 10
+        y = 15
         return x, y
 
     def money_icon_pos(self):
-        slot_w = MAIN_SLOT_IMAGE.get_rect().w
-        x = round(slot_w * 1.06 * 8)
-        x += 5
-        y = COIN_MONEY_IMAGE.get_rect().h + 25
+        (x, y) = self.score_icon_pos()
+        y += VALUE_ICON.get_rect().h + 10
         return x, y
 
     def adjust_portrait(self):
@@ -343,7 +344,9 @@ class HumanPlayerFrame(PlayerFrame):
     def draw(self, surface):
         self.reset_img()
 
-        f = pygame.font.Font(GLOBAL_FONT_FILE_NAME, self.rect.h // 10)
+        f = pygame.font.Font(GLOBAL_FONT_FILE_NAME, 20)
+
+        self.image.blit(VALUE_ICON, self.score_icon_pos())
         text = f.render(str(self.player.base_score()), 1, COLOR_BLACK)
         self.image.blit(text, self.score_pos(text.get_rect()))
 

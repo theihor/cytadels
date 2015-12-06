@@ -12,6 +12,7 @@ def action_rob(gs, scene):
         objects += scene[key]
 
     robbed = next(p for p in gs.players if p.role == gs.robbed)
+    if robbed.money == 0: return
     robber = gs.robber()
     frames = scene['frames']
     robbed_frame = next(f for f in frames if f.player.role == robbed.role)
