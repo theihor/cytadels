@@ -83,6 +83,29 @@ class Deck(Clickable):
         self.draw_priority = 99
 
 
+class AbilityButton(Clickable):
+    def __init__(self):
+        Clickable.__init__(self, image=BUTTON_IMAGE.copy())
+        self.draw_priority = 80
+        self.init_img()
+
+    def init_img(self):
+        f = pygame.font.Font(GLOBAL_FONT_FILE_NAME, 20)
+        text = f.render("Ability", 1, COLOR_BLACK)
+        x = (self.rect.w - text.get_rect().w) // 2
+        y = (self.rect.h - text.get_rect().h) // 2
+        self.source_img.blit(text, (x, y))
+        self.reset_img()
+
+    def set(self):
+        self.source_img = BUTTON_ACTIVE_IMAGE.copy()
+        self.init_img()
+
+    def reset(self):
+        self.source_img = BUTTON_IMAGE.copy()
+        self.init_img()
+
+
 class CardSlot(Drawable):
     def __init__(self, card=None, pos=None, main=False):
         self.main = main
@@ -340,6 +363,13 @@ class HumanPlayerFrame(PlayerFrame):
         self.portrait.set_pos(x, y)
 
         self.portrait.collide_rect = self.portrait.rect.copy()
+
+    def ability_button_pos(self, rect):
+        (x, _) = self.global_portrait_pos()
+        (_, y) = HAND_POSITION
+        x -= rect.w + 10
+        y -= 10
+        return x, y
 
     def draw(self, surface):
         self.reset_img()

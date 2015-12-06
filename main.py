@@ -48,6 +48,11 @@ def get_view(gs):
         if slot.card:
             scene['human_player_frame_slot_cards'].append(slot.card)
 
+    button = AbilityButton()
+    (x, y) = frame.ability_button_pos(button.rect)
+    button.set_pos(x, y)
+    scene['button'] = [button]
+
     player_hand = PlayerHand(gs.human_player().hand)
     scene['player_hand'] = [player_hand]
     scene['player_hand_cards'] = player_hand.cards

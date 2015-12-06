@@ -72,7 +72,6 @@ def action_reveal(scene, p):
 
 
 def wait_click(gs, objects):
-    #print([obj for obj in objects if isinstance(obj, Clickable)])
     while True:
         for obj in [obj for obj in objects if isinstance(obj, Updatable)]:
             mp = pygame.mouse.get_pos()
@@ -332,42 +331,4 @@ def action_take_card(p, gs, scene):
     p.hand.append(dict)
     log(p.roled_name() + ' keeps ' + str_card(dict) + ' and now has ' + str(len(p.hand)) + ' cards.')
     refresh_scene(objects)
-
-
-def action_human_player_turn(gs, scene):
-    objects = scene_objects(scene)
-    p = gs.human_player()
-
-    used_action = False
-    used_ability = True
-
-    build_count = 1
-    if p.role[0] == 'Architect':
-        build_count = 3
-
-    while not(used_action and used_ability and build_count <= 0):
-        obj = wait_click(gs, objects)
-        #print(obj)
-        if isinstance(obj, CardInHand) and build_count > 0:
-            built = action_player_picked_card(obj, gs, scene)
-            if built: build_count -= 1
-
-        if isinstance(obj, Coins) and not used_action:
-            action_take_money(p, scene)
-            used_action = True
-
-        if isinstance(obj, Deck) and not used_action:
-            action_human_player_takes_card(p, gs, scene)
-            used_action = True
-
-        if not p.card_to_build():
-            build_count = 0
-
-        objects = scene_objects(scene)
-        refresh_scene(objects)
-
-
-
-
-
 

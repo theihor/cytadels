@@ -1,4 +1,5 @@
 import pygame
+import sys
 from pygame import Surface, Rect
 from globalvars import *
 from characters import CHARACTERS
@@ -11,8 +12,10 @@ pygame.font.init()
 
 
 def idle():
+    for e in pygame.event.get():
+        if e.type == pygame.QUIT:
+            sys.exit()
     clock.tick(4)
-
 
 
 def load_image(name, colorkey=None):
@@ -133,6 +136,10 @@ PORTRAIT_UNKNOWN_IMAGE = load_image("unknown_hero.png")
 COINS_IMAGE = load_image("coins.png")
 
 BLANK_IMAGE = load_image("blank.png")
+
+BUTTON_IMAGE = load_image("button.png")
+BUTTON_ACTIVE_IMAGE = load_image("button_active.png")
+
 
 def transparent_surface(size):
     img = Surface(size)

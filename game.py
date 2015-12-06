@@ -5,6 +5,49 @@ from actions import *
 from abilities import *
 
 
+def human_player_turn(gs, scene):
+    objects = scene_objects(scene)
+    p = gs.human_player()
+
+    used_action = False
+    used_ability = False
+
+    build_count = 1
+    if p.role[0] == 'Architect':
+        build_count = 3
+
+    while not(used_action and used_ability and build_count <= 0):
+        obj = wait_click(gs, objects)
+        if isinstance(obj, CardInHand) and build_count > 0:
+            built = action_player_picked_card(obj, gs, scene)
+            if built: build_count -= 1
+
+        if isinstance(obj, Coins) and not used_action:
+            action_take_money(p, scene)
+            used_action = True
+
+        if isinstance(obj, Deck) and not used_action:
+            action_human_player_takes_card(p, gs, scene)
+            used_action = True
+
+        if isinstance(obj, AbilityButton) and not used_ability:
+            obj.set()
+            refresh_scene(objects)
+            if p.role[0] in ABILITY_TAB:
+                ABILITY_TAB[p.role[0]](gs, scene)
+            else:
+                p.role[1](p, gs)
+            obj.reset()
+            refresh_scene(objects)
+            used_ability = True
+
+        if not p.card_to_build():
+            build_count = 0
+
+        objects = scene_objects(scene)
+        refresh_scene(objects)
+
+
 def p_build(scene, p):
     card = p.card_to_build()
     if card and len(p.slots) < COUNT_OF_SLOTS:
@@ -36,8 +79,7 @@ def do_turn(gs, scene):
         gs.crown_owner = gs.players.index(p)
 
     if p == gs.human_player():
-        action_human_player_turn(gs, scene)
-        p_use_ability(p, gs, scene)
+        human_player_turn(gs, scene)
         return
 
     if p.role == gs.killed: 
@@ -48,7 +90,6 @@ def do_turn(gs, scene):
         action_rob(gs, scene)
         log(p.roled_name() + ' is robbed by ' + robber.roled_name() + '!')
 
-        
     if random.random() <= 0.99:
         play_role = random.randint(0, 2)
         if play_role == 0:
