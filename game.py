@@ -76,7 +76,7 @@ def do_turn(gs, scene):
 
     if p.role[0] == 'King':
         log(p.roled_name() + ' gets the crown!')
-        gs.crown_owner = gs.players.index(p)
+        action_change_crown_owner(p, gs, scene)
 
     if p == gs.human_player():
         human_player_turn(gs, scene)

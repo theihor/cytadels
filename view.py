@@ -149,12 +149,13 @@ class CardSlot(Drawable):
 
 
 class PlayerFrame(Drawable):
-    def __init__(self, player, killed=False):
+    def __init__(self, player, killed=False, crown_owner=False):
         GameObject.__init__(self)
         self.player = player
         self.slots = []
         self.draw_priority = 90
         self.killed = killed
+        self.crown_owner = crown_owner
 
         self.init_slots()
 
@@ -177,6 +178,18 @@ class PlayerFrame(Drawable):
         for i in range(len(self.slots), COUNT_OF_SLOTS):
             slot_obj = CardSlot(pos=self.slot_pos(i))
             self.slots.append(slot_obj)
+
+    def crown_pos(self):
+        (x, _) = self.score_icon_pos()
+        (_, y) = self.portrait_pos()
+        x += 2
+        y += PORTRAIT_SIZE[1] + 4
+        return x, y
+
+    def global_crown_pos(self):
+        (x, y) = self.crown_pos()
+        (x1, y1) = self.pos()
+        return x + x1, y + y1
 
     def portrait_pos(self):
         slot_w = SLOT_IMAGE.get_rect().w
@@ -275,16 +288,20 @@ class PlayerFrame(Drawable):
         text = f.render(str(len(self.player.hand)), 1, COLOR_BLACK)
         self.image.blit(text, self.cards_value_pos(text.get_rect()))
 
+        if self.crown_owner:
+            self.image.blit(CROWN_IMAGE, self.crown_pos())
+
         surface.blit(self.image, self.rect)
 
 
 class AIPlayerFrame(PlayerFrame):
-    def __init__(self, player, number, killed=False):
+    def __init__(self, player, number, killed=False, crown_owner=False):
         GameObject.__init__(self, PLAYER_FRAME_IMAGE.copy())
         self.player = player
         self.slots = []
         self.draw_priority = 90
         self.killed = killed
+        self.crown_owner = crown_owner
 
         (x, y) = self.frame_pos(number)
         self.set_pos(x, y)
@@ -307,8 +324,8 @@ class AIPlayerFrame(PlayerFrame):
 
 
 class HumanPlayerFrame(PlayerFrame):
-    def __init__(self, player, killed=False):
-        PlayerFrame.__init__(self, player, killed=killed)
+    def __init__(self, player, killed=False, crown_owner=False):
+        PlayerFrame.__init__(self, player, killed=killed, crown_owner=crown_owner)
         self.source_img = transparent_surface(HUMAN_PLAYER_FRAME_SIZE)
         self.reset_img()
         (x, y) = HUMAN_PLAYER_FRAME_POS
@@ -371,6 +388,11 @@ class HumanPlayerFrame(PlayerFrame):
         y -= 10
         return x, y
 
+    def crown_pos(self):
+        (x, y) = self.money_icon_pos()
+        y += MONEY_ICON.get_rect().h + 5
+        return x, y
+
     def draw(self, surface):
         self.reset_img()
 
@@ -383,6 +405,9 @@ class HumanPlayerFrame(PlayerFrame):
         self.image.blit(MONEY_ICON, self.money_icon_pos())
         text = f.render(str(self.player.money), 1, COLOR_BLACK)
         self.image.blit(text, self.money_pos(text.get_rect()))
+
+        if self.crown_owner:
+            self.image.blit(CROWN_IMAGE, self.crown_pos())
 
         surface.blit(self.image, self.rect)
 

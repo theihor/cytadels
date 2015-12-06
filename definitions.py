@@ -161,3 +161,6 @@ class GameState:
     def human_turn(self):
         p = self.player()
         if p: return p == self.human_player()
+
+    def is_crown_owner(self, p):
+        return p == self.players[self.crown_owner]

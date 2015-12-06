@@ -140,6 +140,8 @@ BLANK_IMAGE = load_image("blank.png")
 BUTTON_IMAGE = load_image("button.png")
 BUTTON_ACTIVE_IMAGE = load_image("button_active.png")
 
+CROWN_IMAGE = load_image("crown.png")
+
 
 def transparent_surface(size):
     img = Surface(size)

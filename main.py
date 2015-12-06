@@ -29,7 +29,7 @@ def get_view(gs):
     scene['portraits'] = []
     for i in range(COUNT_OF_PLAYERS - 1):
         p = gs.players[i+1]
-        frame = AIPlayerFrame(p, i, p.role == gs.killed)
+        frame = AIPlayerFrame(p, i, p.role == gs.killed, gs.is_crown_owner(p))
         scene['frames'].append(frame)
         for slot in frame.slots:
             scene['slots'].append(slot)
@@ -38,7 +38,7 @@ def get_view(gs):
         scene['portraits'].append(frame.portrait)
 
     p = gs.human_player()
-    frame = HumanPlayerFrame(p, p.role == gs.killed)
+    frame = HumanPlayerFrame(p, p.role == gs.killed, gs.is_crown_owner(p))
     scene['frames'].append(frame)
     scene['portraits'].append(frame.portrait)
     scene['human_player_frame_slots'] = []

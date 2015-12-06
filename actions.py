@@ -332,3 +332,20 @@ def action_take_card(p, gs, scene):
     log(p.roled_name() + ' keeps ' + str_card(dict) + ' and now has ' + str(len(p.hand)) + ' cards.')
     refresh_scene(objects)
 
+
+def action_change_crown_owner(p, gs, scene):
+    f1 = next(f for f in scene['frames'] if f.crown_owner)
+    f2 = next(f for f in scene['frames'] if f.player == p)
+
+    obj = Drawable(image=CROWN_IMAGE)
+    (x, y) = f1.global_crown_pos()
+    obj.set_pos(x, y)
+
+    f1.crown_owner = False
+    move_animation(obj, f2.global_crown_pos(), drawable=scene_objects(scene))
+
+    f2.crown_owner = True
+    gs.crown_owner = gs.players.index(p)
+
+    refresh_scene(scene_objects(scene))
+

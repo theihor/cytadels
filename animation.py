@@ -18,7 +18,7 @@ def delay_animation(obj, time, drawable=DRAWABLE):
     obj.draw_priority = old_dp
 
 
-def move_animation(obj, new_pos, time, drawable=DRAWABLE):
+def move_animation(obj, new_pos, time=0.4, drawable=DRAWABLE):
     old_dp = obj.draw_priority
     obj.draw_priority = 0
     ticks = round(time * GLOBAL_FPS)
@@ -121,7 +121,6 @@ def show_message(s, time=1, drawable=DRAWABLE):
 
 def message(text, scene, t=1):
     show_message(text, time=t, drawable=scene_objects(scene))
-
 
 
 def open_card_animation(obj, new_pos, new_size, opened_pos=SHOW_CARD_POS, t=1, drawable=DRAWABLE):
