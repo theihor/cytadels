@@ -62,6 +62,12 @@ class Coins(Clickable):
         (x, y) = COINS_POSITION
         self.set_pos(x, y)
 
+    def center_pos(self):
+        (x, y) = self.pos()
+        x += self.rect.w // 2
+        y += self.rect.h // 2
+        return x, y
+
 
 
 class Deck(Clickable):

@@ -40,11 +40,7 @@ def action_build(scene, p, card_dict):
     p.money -= card_dict['price']
     move_with_a_animation(obj, (x, -obj.size()[1]), 0.4, objects)
 
-    # play card
     p.hand.remove(card_dict)
-    if isinstance(frame, HumanPlayerFrame):
-        scene['player_hand'] = [PlayerHand(p.hand)]
-        scene['player_hand_cards'] = scene['player_hand'][0].cards
     slot = frame.next_slot()
 
     (x, y) = frame.global_cards_icon_pos()
@@ -271,6 +267,16 @@ def action_player_picked_card(obj, gs, scene):
         return True
 
 
+def action_take_money(p, scene):
+    objects = scene_objects(scene)
+    frame = next(f for f in scene['frames'] if f.player == p)
+    (x, y) = scene['coins'][0].center_pos()
+    obj = Drawable(image=MONEY_ICON)
+    obj.set_pos(x, y)
+    move_with_a_animation(obj, frame.global_money_icon_pos(), 0.4, objects)
+    p.money += 2
+
+
 def action_human_player_turn(gs, scene):
     objects = scene_objects(scene)
     p = gs.human_player()
@@ -287,6 +293,10 @@ def action_human_player_turn(gs, scene):
         if isinstance(obj, CardInHand) and build_count > 0:
             built = action_player_picked_card(obj, gs, scene)
             if built: build_count -= 1
+
+        if isinstance(obj, Coins) and not used_action:
+            action_take_money(p, scene)
+            used_action = True
 
         objects = scene_objects(scene)
         refresh_scene(objects)

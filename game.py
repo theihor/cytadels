@@ -10,6 +10,19 @@ def p_build(scene, p):
         action_build(scene, p, card)
 
 
+def p_act(p, gs, scene):
+    if random.random() <= len(p.hand) / 4.5:
+        action_take_money(p, scene)
+    else:
+        cards = gs.top_deck(2)
+        log(p.roled_name() + ' draws ' + str_card(cards[0]) + ' and ' + str_card(cards[1]))
+        card = random.choice(cards)
+        cards.remove(card)
+        gs.discarded += cards
+        p.hand.append(card)
+        log(p.roled_name() + ' keeps ' + str_card(card) + ' and now has ' + str(len(self.hand)) + ' cards.')
+
+
 def do_turn(gs, scene):
     p = gs.player()
     action_reveal(scene, p)
@@ -32,14 +45,14 @@ def do_turn(gs, scene):
         play_role = random.randint(0, 2)
         if play_role == 0:
             p.role[1](p, gs)
-            p.act_random(gs)
+            p_act(p, gs, scene)
             p_build(scene, p)
         elif play_role == 1:
-            p.act_random(gs)
+            p_act(p, gs, scene)
             p.role[1](p, gs)
             p_build(scene, p)
         elif play_role == 2:
-            p.act_random(gs)
+            p_act(p, gs, scene)
             p_build(scene, p)
             p.role[1](p, gs)
     else:
