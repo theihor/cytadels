@@ -1,5 +1,4 @@
 from gameobject import *
-from loadimg import *
 
 
 class Card(Updatable):
@@ -147,7 +146,7 @@ class CharacterCard(Card):
             Card.on_mouse_over(self)
 
 
-class RoleChoiceCard(Clickable):
+class ChoiceCard(Clickable):
     def __init__(self, name, image=None, size=None):
         Clickable.__init__(self, image=image, size=size)
         (x, y) = CHOICE_DECK_POSITION

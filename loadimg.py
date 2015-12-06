@@ -1,11 +1,13 @@
 import pygame
 from pygame import Surface, Rect
 from globalvars import *
-from refresh import *
 from characters import CHARACTERS
 import os
+from math import ceil
 
-
+clock = pygame.time.Clock()
+window = pygame.display.set_mode(WINDOW_SIZE)
+pygame.font.init()
 
 def load_image(name, colorkey=None):
     fullname = os.path.join('img', name)
@@ -123,8 +125,38 @@ PORTRAIT_UNKNOWN_IMAGE = load_image("unknown_hero.png")
 
 COINS_IMAGE = load_image("coins.png")
 
+
+def transparent_surface(size):
+    img = Surface(size)
+    img.fill(COLOR_TRANSPARENT)
+    img.set_colorkey(COLOR_TRANSPARENT)
+    return img
+
+
 def scene_objects(scene):
     objects = []
     for key in scene:
         objects += scene[key]
     return objects
+
+
+def deck_image(image, n, card_size, stepx=0.2, stepy=0.1):
+    cardback = pygame.transform.smoothscale(image, card_size)
+    (w, h) = cardback.get_size()
+    w += ceil(2 * n * abs(stepx))
+    h += ceil(2 * n * abs(stepy))
+    surface = transparent_surface((w, h))
+    (x, y) = (0, 0)
+    if stepx < 0:
+        x += (2 * n - 1) * stepx
+    if stepy > 0:
+        y += (2 * n - 1) * stepy
+    whitecard = pygame.transform.smoothscale(CARD_TEMPLATE_IMAGE, CARD_SIZE_DECK)
+    for i in range(n * 2):
+        if i % 2 == 0 or i == 0 or i == n * 2 - 1:
+            surface.blit(cardback, (round(x), round(y)))
+        else:
+            surface.blit(whitecard, (round(x), round(y)))
+        x += stepx
+        y -= stepy
+    return surface

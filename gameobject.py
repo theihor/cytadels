@@ -2,16 +2,9 @@ import pygame
 import sys
 from globalvars import *
 from card import *
-from math import ceil
 from pygame.sprite import *
 from pygame import Surface
-
-
-def transparent_surface(size):
-    img = Surface(size)
-    img.fill(COLOR_TRANSPARENT)
-    img.set_colorkey(COLOR_TRANSPARENT)
-    return img
+from loadimg import *
 
 
 class GameObject:

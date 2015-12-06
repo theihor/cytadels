@@ -70,7 +70,7 @@ def action_reveal(scene, p):
 
 
 def wait_click(gs, objects):
-    #print([obj for obj in objects if isinstance(obj, Clickable)])
+    print([obj for obj in objects if isinstance(obj, Clickable)])
     while True:
         for obj in [obj for obj in objects if isinstance(obj, Updatable)]:
             mp = pygame.mouse.get_pos()
@@ -105,7 +105,7 @@ def action_player_chooses_role(role_names, gs, scene):
 
     cards = []
     for name in role_names:
-        card = RoleChoiceCard(name, image=CHARACTER_IMAGES[name], size=CARD_SIZE_CHOICE)
+        card = ChoiceCard(name, image=CHARACTER_IMAGES[name], size=CARD_SIZE_CHOICE)
         cards.append(card)
 
     choosing_start_animation(cards, objects)
@@ -128,28 +128,6 @@ def update_roles(scene):
         frame.portrait = CharacterCard(name, frame)
         frame.adjust_portrait()
         scene['portraits'].append(frame.portrait)
-
-
-def deck_image(image, n, card_size, stepx=0.2, stepy=0.1):
-    cardback = pygame.transform.smoothscale(image, card_size)
-    (w, h) = cardback.get_size()
-    w += ceil(2 * n * abs(stepx))
-    h += ceil(2 * n * abs(stepy))
-    surface = transparent_surface((w, h))
-    (x, y) = (0, 0)
-    if stepx < 0:
-        x += (2 * n - 1) * stepx
-    if stepy > 0:
-        y += (2 * n - 1) * stepy
-    whitecard = pygame.transform.smoothscale(CARD_TEMPLATE_IMAGE, CARD_SIZE_DECK)
-    for i in range(n * 2):
-        if i % 2 == 0 or i == 0 or i == n * 2 - 1:
-            surface.blit(cardback, (round(x), round(y)))
-        else:
-            surface.blit(whitecard, (round(x), round(y)))
-        x += stepx
-        y -= stepy
-    return surface
 
 
 def choosing_deck_drawable(n):
@@ -277,25 +255,67 @@ def action_take_money(p, scene):
     p.money += 2
 
 
+def action_human_player_takes_card(p, gs, scene):
+    objects = scene_objects(scene)
+    refresh_scene(objects)
+
+    objects = [Drawable(image=window.copy())]
+    darking = Drawable(image=Surface(WINDOW_SIZE))
+    darking.source_img.set_alpha(200)
+    darking.draw_priority = 0
+    objects.append(darking)
+
+    dicts = gs.top_deck(2)
+    log(p.roled_name() + ' draws ' + str_card(dicts[0]) + ' and ' + str_card(dicts[1]))
+
+    cards = []
+    for dict in dicts:
+        card = card_from_dict(dict)
+        card = ChoiceCard(dict['name'], image=card.source_img, size=CARD_SIZE_DECK)
+        (x, y) = DECK_POSITION
+        card.set_pos(x, y)
+        cards.append(card)
+
+    choosing_card_start_animation(cards, objects)
+
+    obj = wait_click(gs, objects)
+    dict = next(d for d in dicts if d['name'] == obj.name)
+    dicts.remove(dict)
+    gs.discarded += dicts
+
+    player_hand = scene['player_hand'][0]
+
+    objects = objects[:1]
+    move_and_scale_animation(obj, player_hand.next_card_pos(), CARD_SIZE_HAND, 0.5, objects)
+
+    p.hand.append(dict)
+    log(p.roled_name() + ' keeps ' + str_card(dict) + ' and now has ' + str(len(p.hand)) + ' cards.')
+    update_hand(gs, scene)
+
+
 def action_human_player_turn(gs, scene):
     objects = scene_objects(scene)
     p = gs.human_player()
 
     used_action = False
-    used_ability = False
+    used_ability = True
     build_count = 1
     if p.role[0] == 'Architect':
         build_count = 3
 
     while not(used_action and used_ability and build_count == 0):
         obj = wait_click(gs, objects)
-
+        print(obj)
         if isinstance(obj, CardInHand) and build_count > 0:
             built = action_player_picked_card(obj, gs, scene)
             if built: build_count -= 1
 
         if isinstance(obj, Coins) and not used_action:
             action_take_money(p, scene)
+            used_action = True
+
+        if isinstance(obj, Deck) and not used_action:
+            action_human_player_takes_card(p, gs, scene)
             used_action = True
 
         objects = scene_objects(scene)

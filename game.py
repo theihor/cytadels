@@ -20,7 +20,7 @@ def p_act(p, gs, scene):
         cards.remove(card)
         gs.discarded += cards
         p.hand.append(card)
-        log(p.roled_name() + ' keeps ' + str_card(card) + ' and now has ' + str(len(self.hand)) + ' cards.')
+        log(p.roled_name() + ' keeps ' + str_card(card) + ' and now has ' + str(len(p.hand)) + ' cards.')
 
 
 def do_turn(gs, scene):
@@ -29,6 +29,7 @@ def do_turn(gs, scene):
 
     if p == gs.human_player():
         action_human_player_turn(gs, scene)
+        return
 
     if p.role == gs.killed: 
         log(p.roled_name() + ' is killed and skips his turn!')

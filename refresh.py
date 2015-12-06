@@ -1,10 +1,5 @@
-from globalvars import *
-from gameobject import Drawable
-import pygame
-
-clock = pygame.time.Clock()
-window = pygame.display.set_mode(WINDOW_SIZE)
-pygame.font.init()
+from gameobject import *
+from loadimg import *
 
 
 def refresh_scene(objects):

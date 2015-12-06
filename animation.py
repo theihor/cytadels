@@ -232,3 +232,10 @@ def end_round_animation(objs, drawable):
     move_and_scale_group_animation(opss, drawable=drawable)
 
 
+def choosing_card_start_animation(objs, drawable):
+    n = len(objs)
+    opss = []
+    for i in range(len(objs)):
+        opss.append((objs[i], choice_pos(i, n), CARD_SIZE_CHOICE))
+    move_and_scale_group_animation(opss, drawable=drawable)
+
