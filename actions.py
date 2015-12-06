@@ -38,7 +38,7 @@ def action_build(scene, p, card_dict):
     obj = Drawable(image=MONEY_ICON)
     obj.set_pos(x, y)
     p.money -= card_dict['price']
-    move_with_a_animation(obj, (x, -obj.size()[1]), 0.4, objects)
+    move_with_a_animation(obj, scene['coins'][0].center_pos(), 0.4, objects)
 
     p.hand.remove(card_dict)
     slot = frame.next_slot()
@@ -54,6 +54,7 @@ def action_build(scene, p, card_dict):
     frame.put_card_in_slots(card, scene)
 
     log(p.roled_name() + ' builds ' + str_card(card_dict) + ' and now has ' + str(p.base_score()) + ' Score')
+    refresh_scene(objects)
 
 
 def action_reveal(scene, p):
@@ -141,6 +142,7 @@ def choosing_deck_drawable(n):
 
 def action_role_choosing(gs, scene):
     objects = scene_objects(scene)
+    refresh_scene(objects)
     end_round_animation(scene['portraits'], objects)
 
     scene['portraits'] = []
@@ -195,7 +197,7 @@ def action_player_builds(obj, gs, scene):
     coin = Drawable(image=MONEY_ICON)
     coin.set_pos(x, y)
     p.money -= card_dict['price']
-    move_with_a_animation(coin, (x, -obj.size()[1]), 0.4, objects)
+    move_with_a_animation(coin, scene['coins'][0].center_pos(), 0.4, objects)
 
     slot = frame.next_slot()
 
@@ -207,6 +209,7 @@ def action_player_builds(obj, gs, scene):
     frame.put_card_in_slots(card, scene)
 
     log(p.roled_name() + ' builds ' + str_card(card_dict) + ' and now has ' + str(p.base_score()) + ' Score')
+    refresh_scene(objects)
 
 
 def action_player_picked_card(obj, gs, scene):
@@ -232,11 +235,10 @@ def action_player_picked_card(obj, gs, scene):
     objects.append(undo_area)
 
     area = wait_click(gs, objects)
-    if area == undo_area:
+    if area == undo_area or obj.card.price > gs.human_player().money:
         obj.second_click()
         gs.human_player().hand.append(obj.card.dict)
         update_hand(gs, scene)
-
         return False
     else:
         obj.second_click()
@@ -253,6 +255,7 @@ def action_take_money(p, scene):
     obj.set_pos(x, y)
     move_with_a_animation(obj, frame.global_money_icon_pos(), 0.4, objects)
     p.money += 2
+    refresh_scene(objects)
 
 
 def action_human_player_takes_card(p, gs, scene):
@@ -325,6 +328,7 @@ def action_take_card(p, gs, scene):
 
     p.hand.append(dict)
     log(p.roled_name() + ' keeps ' + str_card(dict) + ' and now has ' + str(len(p.hand)) + ' cards.')
+    refresh_scene(objects)
 
 
 def action_human_player_turn(gs, scene):
@@ -333,11 +337,12 @@ def action_human_player_turn(gs, scene):
 
     used_action = False
     used_ability = True
+
     build_count = 1
     if p.role[0] == 'Architect':
         build_count = 3
 
-    while not(used_action and used_ability and build_count == 0):
+    while not(used_action and used_ability and build_count <= 0):
         obj = wait_click(gs, objects)
         print(obj)
         if isinstance(obj, CardInHand) and build_count > 0:
@@ -351,6 +356,9 @@ def action_human_player_turn(gs, scene):
         if isinstance(obj, Deck) and not used_action:
             action_human_player_takes_card(p, gs, scene)
             used_action = True
+
+        if not p.card_to_build():
+            build_count = 0
 
         objects = scene_objects(scene)
         refresh_scene(objects)

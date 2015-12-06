@@ -83,39 +83,6 @@ class Deck(Clickable):
         self.draw_priority = 99
 
 
-
-    # @staticmethod
-    # def top_deck_animation(card_d, drawable, hand_pos):
-    #     card = card_from_dict(card_d)
-    #     (x, y) = DECK_POSITION
-    #     (w, h) = CARD_SIZE_DECK
-    #     card.scale(w, h)
-    #     card.set_pos(x, y)
-    #     (dest_x, dest_y) = SHOW_CARD_POS
-    #     cardback = get_cardback()
-    #     cardback.scale(w, h)
-    #     cardback.set_pos(x, y)
-    #     move_and_scale_animation(cardback, (x + w // 2, y), (0, h), 0.2, drawable)
-    #
-    #     card.set_rect((x + w // 2, y), (0, h))
-    #     move_and_scale_animation(card, (x, y), (w, h), 0.2, drawable)
-    #
-    #     move_and_scale_animation(card, (dest_x, dest_y), CARD_SIZE_DEFAULT, 0.4, drawable)
-    #     delay_animation(card, 0.6, drawable)
-    #     move_and_scale_animation(card, hand_pos, CARD_SIZE_HAND, 0.3, drawable)
-    #
-    #     hand = next(o for o in drawable if isinstance(o, PlayerHand))
-    #     hand.add_card(card)
-    #
-    # def on_click(self, gs, drawable, mouse_pos=None):
-    #     cards = gs.top_deck()
-    #     n = len(gs.human_player().hand)
-    #     (x, y) = HAND_POSITION
-    #     x += n * (CARD_SIZE_HAND[0] + HAND_STEP)
-    #     Deck.top_deck_animation(cards[0], drawable, (x, y))
-    #     gs.human_player().hand += cards
-
-
 class CardSlot(Drawable):
     def __init__(self, card=None, pos=None, main=False):
         self.main = main
@@ -196,19 +163,25 @@ class PlayerFrame(Drawable):
         y = self.rect.h // 2 - h // 2
         return x, y
 
-    @staticmethod
-    def score_pos(value_rect):
+    def slots_end_x(self):
         slot_w = SLOT_IMAGE.get_rect().w
         x = round(slot_w * 1.06 * 4)
-        x += (PLAYER_PORTRAIT_FRAME_IMAGE.get_rect().w // 2 - value_rect.w) // 2
-        y = 12
+        return x
+
+    def score_icon_pos(self):
+        x = self.slots_end_x() + 15
+        y = 15
         return x, y
 
-    @staticmethod
-    def money_icon_pos():
-        slot_w = SLOT_IMAGE.get_rect().w
-        x = round(slot_w * 1.06 * 4) + 15
-        y = PLAYER_FRAME_IMAGE.get_rect().h - MONEY_ICON.get_rect().h - 12
+    def score_pos(self, value_rect):
+        (x, y) = self.score_icon_pos()
+        x += VALUE_ICON.get_rect().h + 4
+        y += (VALUE_ICON.get_rect().h - value_rect.h) // 2
+        return x, y
+
+    def money_icon_pos(self):
+        (x, y) = self.score_icon_pos()
+        x += PORTRAIT_SIZE[0] // 2 + 10
         return x, y
 
     def global_money_icon_pos(self):
@@ -223,8 +196,9 @@ class PlayerFrame(Drawable):
         return x, y
 
     def cards_icon_pos(self):
-        (x, y) = self.money_icon_pos()
-        x += PLAYER_PORTRAIT_FRAME_IMAGE.get_rect().w // 2
+        (x, y) = self.score_icon_pos()
+        x += PORTRAIT_SIZE[0] // 2 + 5
+        y += PORTRAIT_SIZE[1] + CARDS_ICON.get_rect().h + 10
         return x, y
 
     def global_cards_icon_pos(self):
@@ -266,7 +240,9 @@ class PlayerFrame(Drawable):
     def draw(self, surface):
         self.reset_img()
 
-        f = pygame.font.Font(GLOBAL_FONT_FILE_NAME, self.rect.h // 10)
+        f = pygame.font.Font(GLOBAL_FONT_FILE_NAME, 20)
+
+        self.image.blit(VALUE_ICON, self.score_icon_pos())
         text = f.render(str(self.player.base_score()), 1, COLOR_BLACK)
         self.image.blit(text, self.score_pos(text.get_rect()))
 

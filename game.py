@@ -8,6 +8,7 @@ def p_build(scene, p):
     card = p.card_to_build()
     if card and len(p.slots) < COUNT_OF_SLOTS:
         action_build(scene, p, card)
+    idle()
 
 
 def p_act(p, gs, scene):
@@ -15,6 +16,7 @@ def p_act(p, gs, scene):
         action_take_money(p, scene)
     else:
         action_take_card(p, gs, scene)
+    idle()
 
 
 def do_turn(gs, scene):

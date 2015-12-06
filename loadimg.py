@@ -11,7 +11,7 @@ pygame.font.init()
 
 
 def idle():
-    clock.tick(3)
+    clock.tick(4)
 
 
 
@@ -126,6 +126,7 @@ MAIN_SLOT_IMAGE = load_image("main_slot_card.png")
 PLAYER_PORTRAIT_FRAME_IMAGE = load_image("oval_frame.png")
 MONEY_ICON = load_image("coin_on_table.png")
 CARDS_ICON = load_image("card_on_table.png")
+VALUE_ICON = load_image("value.png")
 
 PORTRAIT_UNKNOWN_IMAGE = load_image("unknown_hero.png")
 
