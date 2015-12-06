@@ -61,7 +61,12 @@ CARDS = [ "tavern.png",
           "park.png",
           "temple.png",
           "armory.png",
-          "circus.png"
+          "circus.png",
+          "chapel.png",
+          "fortress.png",
+          "manor.png",
+          "shop.png",
+          "town_hall.png"
           ]
 
 CARD_IMAGES = {}

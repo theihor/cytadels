@@ -82,7 +82,11 @@ def ability_wizardry(gs, scene):
     names = ["Research", "Illusion"]
     texts = ["Discard your hand and tedraw.",
              "Swap your hand with another player."]
-    res = action_choose(gs, scene, names, texts)
+
+    if gs.human_turn():
+        res = action_choose(gs, scene, names, texts)
+    else:
+        res = random.choice(names)
 
     if res == "Research":
         n = len(p.hand)
