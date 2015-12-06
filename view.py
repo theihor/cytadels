@@ -55,6 +55,15 @@ class PlayerHand(Drawable):
         self.cards.append(CardInHand(card))
 
 
+class Coins(Clickable):
+    def __init__(self):
+        Clickable.__init__(self, image=COINS_IMAGE)
+        self.draw_priority = 98
+        (x, y) = COINS_POSITION
+        self.set_pos(x, y)
+
+
+
 class Deck(Clickable):
     stepx = 0.2
     stepy = 0.1

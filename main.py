@@ -55,6 +55,9 @@ def get_view(gs):
     deck = Deck(gs.deck)
     scene['deck'] = [deck]
 
+    coins = Coins()
+    scene['coins'] = [coins]
+
     return scene
 
 

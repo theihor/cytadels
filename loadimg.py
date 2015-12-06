@@ -121,6 +121,7 @@ CARDS_ICON = load_image("card_on_table.png")
 
 PORTRAIT_UNKNOWN_IMAGE = load_image("unknown_hero.png")
 
+COINS_IMAGE = load_image("coins.png")
 
 def scene_objects(scene):
     objects = []
