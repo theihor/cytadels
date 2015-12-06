@@ -12,6 +12,8 @@ class Card(Updatable):
         self.old_rect = None
         self.mouse_over = False
 
+        self.mp_on_pick = None
+
     def on_mouse_over(self):
         if not self.mouse_over:
             self.old_rect = self.rect.copy()
@@ -33,10 +35,20 @@ class Card(Updatable):
             self.old_rect = None
             self.mouse_over = False
 
+    def draw(self, surface):
+        if self.mp_on_pick:
+            (x, y) = self.pos()
+            (mx1, my1) = self.mp_on_pick
+            (mx2, my2) = pygame.mouse.get_pos()
+            self.mp_on_pick = (mx2, my2)
+            self.set_pos(x + (mx2 - mx1), y + (my2 - my1))
+        Updatable.draw(self, surface)
+
 
 class NoImgCard(Card):
     def __init__(self, card_dict):
         Card.__init__(self)
+        self.dict = card_dict
         self.name = card_dict['name']
         self.price = card_dict['price']
         self.value = card_dict['value']
@@ -66,6 +78,7 @@ class NoImgCard(Card):
 class ImgCard(Card):
     def __init__(self, image, card_dict):
         Card.__init__(self)
+        self.dict = card_dict
         self.name = card_dict['name']
         self.price = card_dict['price']
         self.value = card_dict['value']
@@ -115,6 +128,7 @@ class CharacterCard(Card):
         self.revealed = False
 
         self.init_img()
+        self.mp_on_pick = None
 
     def init_img(self):
         if self.name in CHARACTER_IMAGES:
@@ -131,3 +145,68 @@ class CharacterCard(Card):
     def on_mouse_over(self):
         if self.name in CHARACTER_IMAGES and self.frame.player.revealed:
             Card.on_mouse_over(self)
+
+
+class RoleChoiceCard(Clickable):
+    def __init__(self, name, image=None, size=None):
+        Clickable.__init__(self, image=image, size=size)
+        (x, y) = CHOICE_DECK_POSITION
+        self.set_pos(x, y)
+        self.draw_priority = -1
+        self.mouse_over = False
+        self.name = name
+
+    def on_mouse_over(self):
+        if not self.mouse_over:
+            self.mouse_over = True
+
+            (x, y) = self.pos()
+            (w, h) = self.rect.size
+
+            img = Surface((w + 10, h + 10))
+            img.fill(COLOR_GREEN)
+            img.blit(self.image, (5, 5))
+            self.image = img
+
+            self.set_pos(x - 5, y - 5)
+
+    def on_mouse_out(self):
+        if self.mouse_over:
+            (x, y) = self.pos()
+            self.set_rect((x + 5, y + 5), CARD_SIZE_CHOICE)
+            self.mouse_over = False
+
+
+class CardInHand(Clickable):
+    def __init__(self, card):
+        self.card = card
+        Clickable.__init__(self, image=transparent_surface(self.card.size()))
+        self.draw_priority = 10
+
+    def first_click(self):
+        (x, y) = pygame.mouse.get_pos()
+        self.card.mp_on_pick = (x, y)
+        (w, h) = CARD_SIZE_CHOICE
+        self.card.scale(w, h)
+        x -= self.card.rect.w // 2
+        y -= self.card.rect.h // 2
+        self.card.set_pos(x, y)
+
+    def second_click(self):
+        self.card.mp_on_pick = None
+
+    def collides(self, pos):
+        return self.card.collide_rect.collidepoint(pos)
+
+    def draw(self, surface):
+        self.card.draw(surface)
+
+    def on_mouse_over(self):
+        if not self.card.mp_on_pick:
+            self.card.on_mouse_over()
+
+    def on_mouse_out(self):
+        if not self.card.mp_on_pick:
+            self.card.on_mouse_out()
+
+

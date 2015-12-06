@@ -5,6 +5,7 @@ from view import *
 import pygame
 from log import log
 
+
 def action_rob(gs, scene):
     objects = []
     for key in scene:
@@ -73,6 +74,7 @@ def action_reveal(scene, p):
 
 
 def wait_click(gs, objects):
+    #print([obj for obj in objects if isinstance(obj, Clickable)])
     while True:
         for obj in [obj for obj in objects if isinstance(obj, Updatable)]:
             mp = pygame.mouse.get_pos()
@@ -88,7 +90,7 @@ def wait_click(gs, objects):
             if e.type == pygame.MOUSEBUTTONDOWN and e.button == 1:
                 mp = pygame.mouse.get_pos()
                 for obj in [obj for obj in objects if isinstance(obj, Clickable)]:
-                    if obj.rect.collidepoint(mp):
+                    if obj.collides(mp):
                         obj.on_click(gs, objects)
                         return obj
 
@@ -198,6 +200,96 @@ def action_role_choosing(gs, scene):
         objects.append(deck)
 
     move_with_a_animation(deck, (-deck.size()[0], deck.pos()[1]), 0.5, drawable=objects)
+
+
+def update_hand(gs, scene):
+    player_hand = PlayerHand(gs.human_player().hand)
+    scene['player_hand'] = [player_hand]
+    scene['player_hand_cards'] = player_hand.cards
+
+
+def action_player_builds(obj, gs, scene):
+    objects = scene_objects(scene)
+    card_dict = obj.card.dict
+    card = obj.card
+    objects.append(card)
+    p = gs.human_player()
+    frame = next(f for f in scene['frames'] if f.player == p)
+
+    # spend money
+    (x, y) = frame.global_money_icon_pos()
+    coin = Drawable(image=MONEY_ICON)
+    coin.set_pos(x, y)
+    p.money -= card_dict['price']
+    move_with_a_animation(coin, (x, -obj.size()[1]), 0.4, objects)
+
+    slot = frame.next_slot()
+
+    move_and_scale_animation(card, slot.card_pos(), slot.card_size(), drawable=objects)
+
+    # set card in slot
+    p.slots.append(card_dict)
+    card = card_from_dict(card_dict)
+    frame.put_card_in_slots(card, scene)
+
+    log(p.roled_name() + ' builds ' + str_card(card_dict) + ' and now has ' + str(p.base_score()) + ' Score')
+
+
+def action_player_picked_card(obj, gs, scene):
+    gs.human_player().hand.remove(obj.card.dict)
+    update_hand(gs, scene)
+    objects = scene_objects(scene)
+    refresh_scene(objects)
+    objects = [Drawable(image=window.copy()), obj]
+    obj.first_click()
+
+    (w, h) = WINDOW_SIZE
+    fy = HUMAN_PLAYER_FRAME_POS[1]
+    hy = HAND_POSITION[1]
+    sh = MAIN_SLOT_IMAGE.get_rect().h
+    h1 = ((fy + sh) + hy) // 2
+    build_area = Clickable(size=(w, h1))
+    build_area.draw_priority = 1
+    objects.append(build_area)
+
+    undo_area = Clickable(size=(w, h - h1))
+    undo_area.set_pos(0, h1)
+    undo_area.draw_priority = 1
+    objects.append(undo_area)
+
+    area = wait_click(gs, objects)
+    if area == undo_area:
+        obj.second_click()
+        gs.human_player().hand.append(obj.card.dict)
+        update_hand(gs, scene)
+
+        return False
+    else:
+        obj.second_click()
+        update_hand(gs, scene)
+        action_player_builds(obj, gs, scene)
+        return True
+
+
+def action_human_player_turn(gs, scene):
+    objects = scene_objects(scene)
+    p = gs.human_player()
+
+    used_action = False
+    used_ability = False
+    build_count = 1
+    if p.role[0] == 'Architect':
+        build_count = 3
+
+    while not(used_action and used_ability and build_count == 0):
+        obj = wait_click(gs, objects)
+
+        if isinstance(obj, CardInHand) and build_count > 0:
+            built = action_player_picked_card(obj, gs, scene)
+            if built: build_count -= 1
+
+        objects = scene_objects(scene)
+        refresh_scene(objects)
 
 
 

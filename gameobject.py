@@ -98,7 +98,7 @@ class Updatable(Collidable):
 
 
 class Clickable(Updatable):
-    def on_click(self, gs, drawable):
+    def on_click(self, gs, drawable, mouse_pos=None):
         pass
 
 

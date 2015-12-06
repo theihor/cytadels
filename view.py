@@ -30,11 +30,17 @@ class PlayerHand(Drawable):
             card.scale(card_w, card_h)
             card.set_pos(x, y)
             card.collide_rect = card.rect.copy()
-            self.cards.append(card)
+            #self.cards.append(card)
+            self.cards.append(CardInHand(card))
             x += card_w + round(step)
         self.draw_priority = 11
 
     def draw(self, surface):
+        i = 1
+        for card in self.cards:
+            card.draw_priority = self.draw_priority + i
+            i += 1
+
         pass
 
     def add_card(self, card):
@@ -46,7 +52,7 @@ class PlayerHand(Drawable):
         card.scale(card_w, card_h)
         card.set_pos(x, y)
         card.collide_rect = card.rect.copy()
-        self.cards.append(card)
+        self.cards.append(CardInHand(card))
 
 
 class Deck(Clickable):
@@ -109,7 +115,7 @@ class Deck(Clickable):
         hand = next(o for o in drawable if isinstance(o, PlayerHand))
         hand.add_card(card)
 
-    def on_click(self, gs, drawable):
+    def on_click(self, gs, drawable, mouse_pos=None):
         cards = gs.top_deck()
         n = len(gs.human_player().hand)
         (x, y) = HAND_POSITION
@@ -368,33 +374,6 @@ class HumanPlayerFrame(PlayerFrame):
         return x, y
 
 
-class RoleChoiceCard(Clickable):
-    def __init__(self, name, image=None, size=None):
-        Clickable.__init__(self, image=image, size=size)
-        (x, y) = CHOICE_DECK_POSITION
-        self.set_pos(x, y)
-        self.draw_priority = -1
-        self.mouse_over = False
-        self.name = name
 
-    def on_mouse_over(self):
-        if not self.mouse_over:
-            self.mouse_over = True
-
-            (x, y) = self.pos()
-            (w, h) = self.rect.size
-
-            img = Surface((w + 10, h + 10))
-            img.fill(COLOR_GREEN)
-            img.blit(self.image, (5, 5))
-            self.image = img
-
-            self.set_pos(x - 5, y - 5)
-
-    def on_mouse_out(self):
-        if self.mouse_over:
-            (x, y) = self.pos()
-            self.set_rect((x + 5, y + 5), CARD_SIZE_CHOICE)
-            self.mouse_over = False
 
 

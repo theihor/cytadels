@@ -38,7 +38,7 @@ def move_animation(obj, new_pos, time, drawable=DRAWABLE):
     drawable.remove(obj)
 
 
-def move_with_a_animation(obj, new_pos, time, drawable=DRAWABLE):
+def move_with_a_animation(obj, new_pos, time=0.4, drawable=DRAWABLE):
     old_dp = obj.draw_priority
     obj.draw_priority = 0
     ticks = round(time * GLOBAL_FPS)
@@ -61,7 +61,7 @@ def move_with_a_animation(obj, new_pos, time, drawable=DRAWABLE):
     drawable.remove(obj)
 
 
-def move_and_scale_animation(obj, new_pos, new_size, time, drawable=DRAWABLE):
+def move_and_scale_animation(obj, new_pos, new_size, time=0.4, drawable=DRAWABLE):
     old_dp = obj.draw_priority
     obj.draw_priority = 0
     ticks = round(time * GLOBAL_FPS)
@@ -192,7 +192,7 @@ def move_and_scale_group_animation(opss, time=0.5, drawable=DRAWABLE):
 
 
 def choice_pos(i, n):
-    print(i, n)
+    #print(i, n)
     (w, h) = CARD_SIZE_CHOICE
     (l, m) = WINDOW_SIZE
     if n <= 4:
