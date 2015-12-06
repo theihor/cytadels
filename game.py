@@ -78,13 +78,14 @@ def do_turn(gs, scene):
         log(p.roled_name() + ' gets the crown!')
         action_change_crown_owner(p, gs, scene)
 
+    if p.role == gs.killed:
+        log(p.roled_name() + ' is killed and skips his turn!')
+        return
+
     if p == gs.human_player():
         human_player_turn(gs, scene)
         return
 
-    if p.role == gs.killed: 
-        log(p.roled_name() + ' is killed and skips his turn!')
-        return
     if p.role == gs.robbed:
         robber = next(p for p in gs.players if p.role[0] == 'Thief')
         action_rob(gs, scene)

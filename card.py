@@ -209,3 +209,37 @@ class CardInHand(Clickable):
             self.card.on_mouse_out()
 
 
+class ChoiceCardWithText(ChoiceCard):
+    def __init__(self, name, text, image=None, size=None):
+        ChoiceCard.__init__(self, name, image, size)
+        self.name = name
+        self.text = text
+        self.init_img()
+
+    def init_img(self):
+        #self.reset_img()
+        self.source_img.blit(CARD_TEMPLATE_IMAGE, (0, 0))
+
+        f = pygame.font.Font(GLOBAL_FONT_FILE_NAME, self.rect.h // 12)
+        text = f.render(self.name, 1, COLOR_BLACK)
+        r = text.get_rect()
+        x = self.rect.w // 2 - r.w // 2
+        y = self.rect.h * 8 // 10 + 4
+        self.source_img.blit(text, (x, y))
+
+        gem = GEM_IMAGES[0]
+        x = self.rect.w - gem.get_rect().w - 5
+        y = 5
+        self.source_img.blit(gem, (x, y))
+
+        blank = BLANK_IMAGE.copy()
+        x = (self.rect.w - blank.get_rect().w) // 2
+        y = self.rect.h * 5 // 10
+        self.source_img.blit(blank, (x, y))
+
+        f = pygame.font.Font(GLOBAL_FONT_FILE_NAME, 16)
+        text = f.render(self.text, 1, COLOR_BLACK)
+        self.source_img.blit(text, (x + 4, y + 4))
+
+        self.reset_img()
+
