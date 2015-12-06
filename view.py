@@ -222,8 +222,6 @@ class PlayerFrame(Drawable):
 
     def global_portrait_pos(self):
         (x, y) = self.portrait_pos()
-        print(x, y)
-        print(self.pos())
         pos = self.pos()
         x += pos[0]
         y += pos[1]

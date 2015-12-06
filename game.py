@@ -2,6 +2,7 @@ from log import *
 from characters import *
 import game_init
 from actions import *
+from abilities import *
 
 
 def p_build(scene, p):
@@ -19,12 +20,24 @@ def p_act(p, gs, scene):
     idle()
 
 
+def p_use_ability(p, gs, scene):
+    if p.role[0] in ABILITY_TAB:
+        ABILITY_TAB[p.role[0]](gs, scene)
+    else:
+        p.role[1](p, gs)
+
+
 def do_turn(gs, scene):
     p = gs.player()
     action_reveal(scene, p)
 
+    if p.role[0] == 'King':
+        log(p.roled_name() + ' gets the crown!')
+        gs.crown_owner = gs.players.index(p)
+
     if p == gs.human_player():
         action_human_player_turn(gs, scene)
+        p_use_ability(p, gs, scene)
         return
 
     if p.role == gs.killed: 
@@ -34,24 +47,22 @@ def do_turn(gs, scene):
         robber = next(p for p in gs.players if p.role[0] == 'Thief')
         action_rob(gs, scene)
         log(p.roled_name() + ' is robbed by ' + robber.roled_name() + '!')
-    if p.role[0] == 'King':
-        log(p.roled_name() + ' gets the crown!')
-        gs.crown_owner = gs.players.index(p)
+
         
     if random.random() <= 0.99:
         play_role = random.randint(0, 2)
         if play_role == 0:
-            p.role[1](p, gs)
+            p_use_ability(p, gs, scene)
             p_act(p, gs, scene)
             p_build(scene, p)
         elif play_role == 1:
             p_act(p, gs, scene)
-            p.role[1](p, gs)
+            p_use_ability(p, gs, scene)
             p_build(scene, p)
         elif play_role == 2:
             p_act(p, gs, scene)
             p_build(scene, p)
-            p.role[1](p, gs)
+            p_use_ability(p, gs, scene)
     else:
         log(p.roled_name() + ' is not using his ability.')
         p.act_random(gs)
@@ -74,12 +85,15 @@ def init_round(gs, scene):
     gs.current_player = 0
 
 
-def next_turn(gs, drawable):
+def next_turn(gs, scene):
+    objects = scene_objects(scene)
     log('Turn of ' + CHARACTERS[gs.current_player][0])
+    show_message('Turn of ' + CHARACTERS[gs.current_player][0], drawable=objects)
+
     p = gs.player()
     if p:
         log(p.name + ' is ' + CHARACTERS[gs.current_player][0])
-        do_turn(gs, drawable)
+        do_turn(gs, scene)
     else:
         log('There is no ' + CHARACTERS[gs.current_player][0] + '.')
     gs.inc_player()

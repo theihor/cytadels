@@ -31,6 +31,9 @@ class Player:
             log(self.roled_name() + ' keeps ' + str_card(card) + ' and now has ' + str(len(self.hand)) + ' cards.')
     pass
 
+    def can_build(self, card_dict):
+        return card_dict['price'] <= self.money and card_dict not in self.slots
+
     def card_to_build(self):
         can_build = [card for card in self.hand if card['price'] <= self.money and not card in self.slots]
         if can_build:

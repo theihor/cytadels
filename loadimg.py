@@ -132,6 +132,7 @@ PORTRAIT_UNKNOWN_IMAGE = load_image("unknown_hero.png")
 
 COINS_IMAGE = load_image("coins.png")
 
+BLANK_IMAGE = load_image("blank.png")
 
 def transparent_surface(size):
     img = Surface(size)

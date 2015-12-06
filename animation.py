@@ -87,18 +87,41 @@ def move_and_scale_animation(obj, new_pos, new_size, time=0.4, drawable=DRAWABLE
     drawable.remove(obj)
 
 
-def show_message(s, time=0.7, drawable=DRAWABLE):
-    ticks = round(time * GLOBAL_FPS)
+def show_message(s, time=1, drawable=DRAWABLE):
+    k = 50
+    t1 = 0.1
+
     (w, h) = WINDOW_SIZE
+
     f = pygame.font.Font(GLOBAL_FONT_FILE_NAME, w // 20)
-    text = f.render(s, 1, COLOR_WHITE, COLOR_BLACK)
-    obj = Drawable(image=text)
-    obj.set_pos((w - text.get_rect().w) // 2, (h - text.get_rect().h) // 2)
-    drawable.append(obj)
-    obj.draw_priority = 0
-    for t in range(ticks):
-        refresh_scene(drawable)
-    drawable.remove(obj)
+    text = f.render(s, 1, COLOR_BLACK)
+
+    (tw, th) = text.get_rect().size
+    image = BLANK_IMAGE.copy()
+    image = pygame.transform.smoothscale(image, (round(tw * 1.1), round(th * 1.1)))
+
+    obj = Drawable(image=image)
+    obj.set_pos((w - obj.rect.w) // 2, (h - obj.rect.h) // 2)
+    x = (obj.rect.w - tw) // 2
+    y = (obj.rect.h - th) // 2
+    obj.source_img.blit(text, (x, y))
+    obj.reset_img()
+
+    obj.scale(obj.rect.w // k, obj.rect.h // k)
+    obj.set_pos((w - obj.rect.w) // 2, (h - obj.rect.h) // 2)
+
+    move_and_scale_animation(obj, ((w - text.get_rect().w) // 2, (h - text.get_rect().h) // 2),
+                             text.get_rect().size, time=t1, drawable=drawable)
+
+    delay_animation(obj, time= time - 2 * t1, drawable=drawable)
+
+    move_and_scale_animation(obj, ((w - obj.rect.w // k) // 2, (h - obj.rect.h // k) // 2),
+                             (obj.rect.w // k, obj.rect.h // k), time=t1, drawable=drawable)
+
+
+def message(text, scene, t=1):
+    show_message(text, time=t, drawable=scene_objects(scene))
+
 
 
 def open_card_animation(obj, new_pos, new_size, opened_pos=SHOW_CARD_POS, t=1, drawable=DRAWABLE):
@@ -238,4 +261,11 @@ def choosing_card_start_animation(objs, drawable):
     for i in range(len(objs)):
         opss.append((objs[i], choice_pos(i, n), CARD_SIZE_CHOICE))
     move_and_scale_group_animation(opss, drawable=drawable)
+
+
+def choosing_end_animation(objs, drawable):
+    ops = []
+    for obj in objs:
+        ops.append((obj, (-obj.rect.w, obj.pos()[1])))
+    move_group_animation(ops, drawable=drawable)
 

@@ -71,7 +71,7 @@ def action_reveal(scene, p):
 
 
 def wait_click(gs, objects):
-    print([obj for obj in objects if isinstance(obj, Clickable)])
+    #print([obj for obj in objects if isinstance(obj, Clickable)])
     while True:
         for obj in [obj for obj in objects if isinstance(obj, Updatable)]:
             mp = pygame.mouse.get_pos()
@@ -213,7 +213,9 @@ def action_player_builds(obj, gs, scene):
 
 
 def action_player_picked_card(obj, gs, scene):
-    gs.human_player().hand.remove(obj.card.dict)
+    d = next(d for d in gs.human_player().hand if d['name'] == obj.card.name)
+    gs.human_player().hand.remove(d)
+
     update_hand(gs, scene)
     objects = scene_objects(scene)
     refresh_scene(objects)
@@ -235,7 +237,7 @@ def action_player_picked_card(obj, gs, scene):
     objects.append(undo_area)
 
     area = wait_click(gs, objects)
-    if area == undo_area or obj.card.price > gs.human_player().money:
+    if area == undo_area or not gs.human_player().can_build(obj.card.dict):
         obj.second_click()
         gs.human_player().hand.append(obj.card.dict)
         update_hand(gs, scene)
@@ -344,7 +346,7 @@ def action_human_player_turn(gs, scene):
 
     while not(used_action and used_ability and build_count <= 0):
         obj = wait_click(gs, objects)
-        print(obj)
+        #print(obj)
         if isinstance(obj, CardInHand) and build_count > 0:
             built = action_player_picked_card(obj, gs, scene)
             if built: build_count -= 1
