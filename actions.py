@@ -115,7 +115,7 @@ def action_player_chooses_role(role_names, gs, scene):
     objects = objects[:1] #scene_objects(scene)
     pos = next(f for f in scene['frames'] if f.player == p).global_portrait_pos()
 
-    move_and_scale_animation(obj, pos, PORTRAIT_SIZE, 0.7, drawable=objects)
+    move_and_scale_animation(obj, pos, PLAYER_PORTRAIT_SIZE, 0.7, drawable=objects)
     p.role = next(role for role in gs.roles if role[0] == obj.name)
     gs.roles.remove(p.role)
 
@@ -291,6 +291,40 @@ def action_human_player_takes_card(p, gs, scene):
     p.hand.append(dict)
     log(p.roled_name() + ' keeps ' + str_card(dict) + ' and now has ' + str(len(p.hand)) + ' cards.')
     update_hand(gs, scene)
+
+
+def action_take_card(p, gs, scene):
+    objects = scene_objects(scene)
+    refresh_scene(objects)
+
+    dicts = gs.top_deck(2)
+    log(p.roled_name() + ' draws ' + str_card(dicts[0]) + ' and ' + str_card(dicts[1]))
+
+    cards = []
+    for _ in dicts:
+        card = Drawable(image=CARD_BACK_IMAGE, size=CARD_SIZE_DECK)
+        (x, y) = DECK_POSITION
+        card.set_pos(x, y)
+        card.draw_priority = 0
+        cards.append(card)
+
+    choosing_card_start_animation(cards, objects)
+    idle()
+
+    dict = random.choice(dicts)
+    dicts.remove(dict)
+    gs.discarded += dicts
+
+    frame = next(f for f in scene['frames'] if f.player == p)
+    card = random.choice(cards)
+    objects.remove(card)
+    cards.remove(card)
+    move_and_scale_animation(cards[0],
+                             frame.global_cards_icon_pos(),
+                             CARDS_ICON.get_rect().size, 0.4, objects)
+
+    p.hand.append(dict)
+    log(p.roled_name() + ' keeps ' + str_card(dict) + ' and now has ' + str(len(p.hand)) + ' cards.')
 
 
 def action_human_player_turn(gs, scene):

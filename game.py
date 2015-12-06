@@ -14,13 +14,7 @@ def p_act(p, gs, scene):
     if random.random() <= len(p.hand) / 4.5:
         action_take_money(p, scene)
     else:
-        cards = gs.top_deck(2)
-        log(p.roled_name() + ' draws ' + str_card(cards[0]) + ' and ' + str_card(cards[1]))
-        card = random.choice(cards)
-        cards.remove(card)
-        gs.discarded += cards
-        p.hand.append(card)
-        log(p.roled_name() + ' keeps ' + str_card(card) + ' and now has ' + str(len(p.hand)) + ' cards.')
+        action_take_card(p, gs, scene)
 
 
 def do_turn(gs, scene):

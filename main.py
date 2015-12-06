@@ -98,7 +98,7 @@ while not gs.end():
                 else:
                     game.init_round(gs, scene)
 
-    clock.tick(GLOBAL_FPS * 0.2)
+    clock.tick(GLOBAL_FPS * 0.5)
     if gs.current_player < len(CHARACTERS):
         if not gs.human_turn():
             game.next_turn(gs, scene)

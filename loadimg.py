@@ -9,6 +9,12 @@ clock = pygame.time.Clock()
 window = pygame.display.set_mode(WINDOW_SIZE)
 pygame.font.init()
 
+
+def idle():
+    clock.tick(3)
+
+
+
 def load_image(name, colorkey=None):
     fullname = os.path.join('img', name)
     image = pygame.image.load(fullname)
