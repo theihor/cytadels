@@ -274,11 +274,6 @@ class PlayerFrame(Drawable):
     def draw(self, surface):
         self.reset_img()
 
-        #self.adjust_portrait()
-        #pos = self.portrait_pos()
-        #self.image.blit(PLAYER_PORTRAIT_FRAME_IMAGE, pos)
-        #self.image.blit(self.portrait, pos)
-
         f = pygame.font.Font(GLOBAL_FONT_FILE_NAME, self.rect.h // 10)
         text = f.render(str(self.player.base_score()), 1, COLOR_BLACK)
         self.image.blit(text, self.score_pos(text.get_rect()))
@@ -353,26 +348,44 @@ class HumanPlayerFrame(PlayerFrame):
             self.slots.append(slot_obj)
 
     def portrait_pos(self):
-        slot_w = MAIN_SLOT_IMAGE.get_rect().w
-        x = round(slot_w * 1.06 * 8) + 13
-        y = self.rect.h // 2 - PLAYER_PORTRAIT_FRAME_IMAGE.get_rect().h // 2 - 5
+        x = self.rect.w - PLAYER_PORTRAIT_SIZE[0] - 20
+        y = self.rect.h - PLAYER_PORTRAIT_SIZE[1] - 15
         return x, y
 
-    @staticmethod
-    def score_pos(value_rect):
+    def score_pos(self, value_rect):
         slot_w = MAIN_SLOT_IMAGE.get_rect().w
         x = round(slot_w * 1.06 * 8)
-        x += (PLAYER_PORTRAIT_FRAME_IMAGE.get_rect().w // 2 - value_rect.w) // 2
-        y = 12
+        x = (self.portrait_pos()[0] + x) // 2 - value_rect.w // 2
+        y = 10
         return x, y
 
-    @staticmethod
-    def money_icon_pos():
+    def money_icon_pos(self):
         slot_w = MAIN_SLOT_IMAGE.get_rect().w
-        x = round(slot_w * 1.06 * 8) + 15
-        y = PLAYER_FRAME_IMAGE.get_rect().h - MONEY_ICON.get_rect().h - 12
+        x = round(slot_w * 1.06 * 8)
+        x += 5
+        y = COIN_MONEY_IMAGE.get_rect().h + 25
         return x, y
 
+    def adjust_portrait(self):
+        (w, h) = PLAYER_PORTRAIT_SIZE
+        self.portrait.scale(w, h)
+        (x, y) = self.global_portrait_pos()
+        self.portrait.set_pos(x, y)
+
+        self.portrait.collide_rect = self.portrait.rect.copy()
+
+    def draw(self, surface):
+        self.reset_img()
+
+        f = pygame.font.Font(GLOBAL_FONT_FILE_NAME, self.rect.h // 10)
+        text = f.render(str(self.player.base_score()), 1, COLOR_BLACK)
+        self.image.blit(text, self.score_pos(text.get_rect()))
+
+        self.image.blit(MONEY_ICON, self.money_icon_pos())
+        text = f.render(str(self.player.money), 1, COLOR_BLACK)
+        self.image.blit(text, self.money_pos(text.get_rect()))
+
+        surface.blit(self.image, self.rect)
 
 
 
