@@ -98,7 +98,7 @@ def action_player_chooses_role(role_names, gs, scene):
     role_names.sort(key=lambda x: CHARACTERS_N[x])
     objects = scene_objects(scene)
     refresh_scene(objects)
-    
+
     objects = [Drawable(image=window.copy())]
     darking = Drawable(image=Surface(WINDOW_SIZE))
     darking.source_img.set_alpha(200)

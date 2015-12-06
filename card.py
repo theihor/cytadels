@@ -125,7 +125,8 @@ class CharacterCard(Card):
                 self.source_img = CHARACTER_CARD_BACK_IMAGE
                 self.reset_img()
         else:
-            self.source_img = transparent_surface((1, 1))
+            self.source_img = transparent_surface(PORTRAIT_SIZE)
+            self.reset_img()
 
     def on_mouse_over(self):
         if self.name in CHARACTER_IMAGES and self.frame.player.revealed:

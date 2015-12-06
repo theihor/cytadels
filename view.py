@@ -192,8 +192,10 @@ class PlayerFrame(Drawable):
 
     def portrait_pos(self):
         slot_w = SLOT_IMAGE.get_rect().w
-        x = round(slot_w * 1.06 * 4) + 13
-        y = self.rect.h // 2 - self.portrait.rect.h // 2
+        x = round(slot_w * 1.06 * 4)
+        (w, h) = PORTRAIT_SIZE
+        x += ((self.rect.w - x) - w) // 2
+        y = self.rect.h // 2 - h // 2
         return x, y
 
     @staticmethod
@@ -241,16 +243,15 @@ class PlayerFrame(Drawable):
     def adjust_portrait(self):
         (w, h) = PORTRAIT_SIZE
         self.portrait.scale(w, h)
-        (x, y) = self.portrait_pos()
-        pos = self.pos()
-        x += pos[0]
-        y += pos[1]
+        (x, y) = self.global_portrait_pos()
         self.portrait.set_pos(x, y)
 
         self.portrait.collide_rect = self.portrait.rect.copy()
 
     def global_portrait_pos(self):
         (x, y) = self.portrait_pos()
+        print(x, y)
+        print(self.pos())
         pos = self.pos()
         x += pos[0]
         y += pos[1]
