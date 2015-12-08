@@ -1,10 +1,12 @@
 import pygame
 import sys
+import math
 from globalvars import *
 from card import *
 from pygame.sprite import *
 from pygame import Surface
 from loadimg import *
+import pygame.surfarray as surfa
 
 
 class GameObject:
@@ -64,6 +66,8 @@ class GameObject:
         self.scale(w, h)
 
 
+def sqr(x): return x * x
+
 class Drawable(GameObject):
     def __init__(self, image=None, size=None):
         GameObject.__init__(self, image=image, size=size)
@@ -77,20 +81,36 @@ class Drawable(GameObject):
         if not self.highlighted:
             (x, y) = self.pos()
             (w, h) = self.rect.size
+            (lw, lh) = (round(w * 1.5), round(h * 1.5))
 
-            img = Surface((w + 10, h + 10))
-            img.fill(COLOR_YELLOW)
-            img.blit(self.image, (5, 5))
+            img = Surface((lw, lh), pygame.SRCALPHA)
+            img.fill(COLOR_WHITE)
+            a = surfa.pixels_alpha(img)
+            d = max(lw, lh) / 2
+            (cx, cy) = (lw // 2, lh // 2)
+
+            for i in range(len(a)):
+                for j in range(len(a[i])):
+                    k = math.sqrt(sqr(100.0 * (i - cx) / cx) + sqr(100.0 * (j - cy) / cy))
+                    if k > 100: a[i][j] = 0
+                    else: a[i][j] = 255 - round(k / 100.0 * 255.0)
+
+            a = None
+
+            img.blit(self.image, ((lw - w) // 2, (lh - h) // 2))
             self.image = img
 
-            self.set_pos(x - 5, y - 5)
+            self.set_pos(x - (lw - w) // 2, y - (lh - h) // 2)
             self.highlighted = True
 
     def unhighlight(self):
         if self.highlighted:
             (x, y) = self.pos()
             (w, h) = self.size()
-            self.set_rect((x + 5, y + 5), (w - 10, h - 10))
+            (lw, lh) = (round(w / 1.5), round(h / 1.5))
+            (dx, dy) = ((w - lw) // 2, (h - lh) // 2)
+            self.set_pos(x + dx, y + dy)
+            self.reset_img()
             self.highlighted = False
 
 
