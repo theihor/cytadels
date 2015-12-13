@@ -349,3 +349,6 @@ def action_change_crown_owner(p, gs, scene):
 
     refresh_scene(scene_objects(scene))
 
+def action_discard_player_hand(gs, scene):
+    pass
+

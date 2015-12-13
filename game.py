@@ -44,7 +44,7 @@ def human_player_turn(gs, scene):
             refresh_scene(objects)
             used_ability = True
 
-        if not p.card_to_build():
+        if not p.can_build():
             build_count = 0
 
         objects = scene_objects(scene)
@@ -83,7 +83,7 @@ def do_turn(gs, scene):
 
     if p.role == gs.killed:
         log(p.roled_name() + ' is killed and skips his turn!')
-        show_message(p.role[0] + ' is killed and skips his turn!', drawable=scene_objects(scene))
+        show_message(p.role[0] + ' is killed and skips his turn!', drawable=scene_objects(scene), time=1.5)
         return
 
     if p == gs.human_player():
