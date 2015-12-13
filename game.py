@@ -17,6 +17,12 @@ def human_player_turn(gs, scene):
         build_count = 3
 
     while not(used_action and used_ability and build_count <= 0):
+        if used_ability: scene['button'][0].unhighlight()
+        if not used_ability: scene['button'][0].highlight()
+
+
+
+
         obj = wait_click(gs, objects)
         if isinstance(obj, CardInHand) and build_count > 0:
             built = action_player_picked_card(obj, gs, scene)
@@ -120,6 +126,7 @@ def init_round(gs, scene):
     gs.round += 1
     gs.new_round()
     log('Round ' + str(gs.round))
+    show_message('Round ' + str(gs.round), drawable=scene_objects(scene))
     gs.current_player = 0
     gs.choosing_stage = True
     action_role_choosing(gs, scene)
@@ -138,6 +145,7 @@ def next_turn(gs, scene):
         do_turn(gs, scene)
     else:
         log('There is no ' + CHARACTERS[gs.current_player][0] + '.')
+        show_message('There is no ' + CHARACTERS[gs.current_player][0] + '.', drawable=objects)
     gs.inc_player()
 
 

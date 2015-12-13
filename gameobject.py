@@ -68,14 +68,35 @@ class Drawable(GameObject):
     def __init__(self, image=None, size=None):
         GameObject.__init__(self, image=image, size=size)
         self.draw_priority = 100
+        self.highlighted = False
 
     def draw(self, surface):
         surface.blit(self.image, self.rect)
 
+    def highlight(self):
+        if not self.highlighted:
+            (x, y) = self.pos()
+            (w, h) = self.rect.size
+
+            img = Surface((w + 10, h + 10))
+            img.fill(COLOR_YELLOW)
+            img.blit(self.image, (5, 5))
+            self.image = img
+
+            self.set_pos(x - 5, y - 5)
+            self.highlighted = True
+
+    def unhighlight(self):
+        if self.highlighted:
+            (x, y) = self.pos()
+            (w, h) = self.size()
+            self.set_rect((x + 5, y + 5), (w - 10, h - 10))
+            self.highlighted = False
+
 
 class Collidable(Drawable):
     def __init__(self, image=None, size=None):
-        GameObject.__init__(self, image=image, size=size)
+        Drawable.__init__(self, image=image, size=size)
         self.collide_rect = self.rect
 
     def collides(self, pos):

@@ -248,6 +248,7 @@ def choosing_start_animation(objs, drawable):
 
 
 def end_round_animation(objs, drawable):
+
     opss = []
     for obj in objs:
         opss.append((obj, CHOICE_DECK_POSITION, CARD_SIZE_CHOICE))
