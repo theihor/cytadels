@@ -17,11 +17,8 @@ def human_player_turn(gs, scene):
         build_count = 3
 
     while not(used_action and used_ability and build_count <= 0):
-        if used_ability: scene['button'][0].unhighlight()
-        if not used_ability: scene['button'][0].highlight()
-
-
-
+        #if used_ability: scene['button'][0].unhighlight()
+        #if not used_ability: scene['button'][0].highlight()
 
         obj = wait_click(gs, objects)
         if isinstance(obj, CardInHand) and build_count > 0:
@@ -86,6 +83,7 @@ def do_turn(gs, scene):
 
     if p.role == gs.killed:
         log(p.roled_name() + ' is killed and skips his turn!')
+        show_message(p.role[0] + ' is killed and skips his turn!', drawable=scene_objects(scene))
         return
 
     if p == gs.human_player():

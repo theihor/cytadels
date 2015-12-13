@@ -221,6 +221,7 @@ class ChoiceCardWithText(ChoiceCard):
         self.source_img.blit(CARD_TEMPLATE_IMAGE, (0, 0))
 
         f = pygame.font.Font(GLOBAL_FONT_FILE_NAME, self.rect.h // 12)
+
         text = f.render(self.name, 1, COLOR_BLACK)
         r = text.get_rect()
         x = self.rect.w // 2 - r.w // 2
@@ -237,9 +238,18 @@ class ChoiceCardWithText(ChoiceCard):
         y = self.rect.h * 5 // 10
         self.source_img.blit(blank, (x, y))
 
-        f = pygame.font.Font(GLOBAL_FONT_FILE_NAME, 16)
-        text = f.render(self.text, 1, COLOR_BLACK)
-        self.source_img.blit(text, (x + 4, y + 4))
+        #f = pygame.font.Font(GLOBAL_FONT_FILE_NAME, 16)
+        f = pygame.font.SysFont("Times New Roman", self.rect.h // 20)
+        x0 = x + 10
+        (x, y) = (x0, y + 10)
+        words = self.text.split(' ')
+        for w in words:
+            text = f.render(w + ' ', 1, COLOR_BLACK)
+            if x + text.get_rect().w > blank.get_rect().w - 20:
+                x = x0
+                y += text.get_rect().h + 4
+            self.source_img.blit(text, (x, y))
+            x += text.get_rect().w
 
         self.reset_img()
 

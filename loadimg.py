@@ -98,34 +98,38 @@ for k in GEM_IMAGES:
     GEM_IMAGES[k] = load_image(name)
 
 CHARACTER_PNGS = [ "assassin.png", "thief.png", "magician.png", "king.png",
-                   "priest.png", "merchant.png", "architect.png", "warlord.png" ]
+                   "bishop.png", "merchant.png", "architect.png", "warlord.png" ]
 
+CHARACTER_IMAGES_NO_TEXT = {}
 CHARACTER_IMAGES = {}
 for i in range(len(CHARACTERS)):
     name = CHARACTERS[i][0]
-    img = load_image(os.path.join('characters', CHARACTER_PNGS[i]))
-    img.blit(CARD_TEMPLATE_IMAGE, (0, 0))
-
-    f = pygame.font.Font(GLOBAL_FONT_FILE_NAME, img.get_rect().h // 12)
-    text = f.render(name, 1, COLOR_BLACK)
-    r = text.get_rect()
-    x = img.get_rect().w // 2 - r.w // 2
-    y = img.get_rect().h * 8 // 10 + 4
-    img.blit(text, (x, y))
-
-    gem = GEM_IMAGES[CHARACTER_GEMS[name]]
-    x = img.get_rect().w - gem.get_rect().w - 5
-    y = 5
-    img.blit(gem, (x, y))
-
-    text = f.render(str([c[0] for c in CHARACTERS].index(name) + 1), 1, COLOR_BLACK)
-    r_gem = Rect((x, y), gem.get_rect().size)
-    r = text.get_rect()
-    x = r_gem.x + (r_gem.w - r.w) // 2
-    y = r_gem.y + (r_gem.h - r.h) // 2
-    img.blit(text, (x, y))
+    img = load_image(os.path.join('characters/info', CHARACTER_PNGS[i]))
+    # img.blit(CARD_TEMPLATE_IMAGE, (0, 0))
+    #
+    # f = pygame.font.Font(GLOBAL_FONT_FILE_NAME, img.get_rect().h // 12)
+    # text = f.render(name, 1, COLOR_BLACK)
+    # r = text.get_rect()
+    # x = img.get_rect().w // 2 - r.w // 2
+    # y = img.get_rect().h * 8 // 10 + 4
+    # img.blit(text, (x, y))
+    #
+    # gem = GEM_IMAGES[CHARACTER_GEMS[name]]
+    # x = img.get_rect().w - gem.get_rect().w - 5
+    # y = 5
+    # img.blit(gem, (x, y))
+    #
+    # text = f.render(str([c[0] for c in CHARACTERS].index(name) + 1), 1, COLOR_BLACK)
+    # r_gem = Rect((x, y), gem.get_rect().size)
+    # r = text.get_rect()
+    # x = r_gem.x + (r_gem.w - r.w) // 2
+    # y = r_gem.y + (r_gem.h - r.h) // 2
+    # img.blit(text, (x, y))
 
     CHARACTER_IMAGES[name] = img
+    img = load_image(os.path.join('characters', CHARACTER_PNGS[i]))
+    CHARACTER_IMAGES_NO_TEXT[name] = img
+
 
 PLAYER_FRAME_IMAGE = load_image('frame.png')
 SLOT_IMAGE = load_image("slot_card.png")

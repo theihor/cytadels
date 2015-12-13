@@ -24,7 +24,10 @@ def action_choose_character(gs, scene, names):
     return obj.name
 
 
-def action_choose(gs, scene, names, texts=[]):
+def action_choose(gs, scene, names, texts=[], image=None):
+    if image is None:
+        image = Surface(CARD_SIZE_DEFAULT)
+
     objects = scene_objects(scene)
     refresh_scene(objects)
 
@@ -38,7 +41,7 @@ def action_choose(gs, scene, names, texts=[]):
     for i in range(len(names)):
         if i < len(texts):
             text = texts[i]
-        card = ChoiceCardWithText(names[i], text, image=Surface(CARD_SIZE_DEFAULT))
+        card = ChoiceCardWithText(names[i], text, image=image.copy())
         (w, h) = CARD_SIZE_CHOICE
         card.scale(w, h)
         cards.append(card)
@@ -84,7 +87,7 @@ def ability_wizardry(gs, scene):
              "Swap your hand with another player."]
 
     if gs.human_turn():
-        res = action_choose(gs, scene, names, texts)
+        res = action_choose(gs, scene, names, texts=texts, image=CHARACTER_IMAGES_NO_TEXT['Wizard'])
     else:
         res = random.choice(names)
 
